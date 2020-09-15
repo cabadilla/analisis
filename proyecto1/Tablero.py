@@ -33,14 +33,10 @@ class Tablero:
                 screen.blit(casilla.image,casilla.coor)
             self.matrizCasillas.append(arreglo)
             
-
-            
-     
+    def verClick(self):
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 
-                
-
-
-
 
 
 tablero=Tablero()
@@ -49,7 +45,7 @@ tablero=Tablero()
 #loop del juego
 while True:
     
-
+    tablero.verClick()
 
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
