@@ -27,6 +27,7 @@ class Tablero:
         self.jugadores=[]
         self.crearTablero()
         self.crearJugadores()
+        self.turno=0
         
         
         
@@ -51,13 +52,21 @@ class Tablero:
         return self.fabricaDeFichas.bolsa.pop()
 
     def crearJugadores(self):
-        Hplayer=Player("Player", pygame.Color(51, 133, 255))                  #Creacion del jugador Humano
+        rect1 = (750, 50, 250, 50)
+        rect2 = (750, 140, 250, 50)
+        rect3 = (750, 230, 250, 50)
+
+        pygame.draw.rect(screen, NEGRO, rect1, 2)
+        pygame.draw.rect(screen, NEGRO, rect2, 2)
+        pygame.draw.rect(screen, NEGRO, rect3, 2)
+
+        Hplayer=Player("Player", pygame.Color(51, 133, 255),rect1)                  #Creacion del jugador Humano
         Hplayer.fichasDisponibles=self.agregarFichas()
 
-        A1player=Player("Algoritmo 1", pygame.Color(255, 106, 51))            #Creacion del jugador Algoritmo 1
+        A1player=Player("Algoritmo 1", pygame.Color(255, 106, 51),rect2)            #Creacion del jugador Algoritmo 1
         A1player.fichasDisponibles=self.agregarFichas()
 
-        A2player=Player("Algoritmo 2", pygame.Color(157, 255, 51))            #Creacion del jugador Algoritmo 2
+        A2player=Player("Algoritmo 2", pygame.Color(157, 255, 51),rect3)            #Creacion del jugador Algoritmo 2
         A2player.fichasDisponibles=self.agregarFichas()
        
         NormalFont=pygame.font.SysFont("monospace", 18)
@@ -69,12 +78,17 @@ class Tablero:
         self.jugadores.append(A2player)
 
         
+    def cambiarTurno(self):
+        if(self.turno==2):
+            self.turna=0
+        else:
+            self.turno+=1
 
+    def dibujarTablero(self):
+        for i in self.matrizCasillas:
+            for j in i:
+                screen.blit(j.image,j.coor)
 
-    def verClick(self):
-        for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                print("")  #Daba error porque no habia nada aqui entonces puse un print vacio 
 
     def plusPuntuacion(self):            # metodo de prueba para aumentar la puntuacion de los jugadores y que se pueda actualizar
         for player in self.jugadores:
@@ -88,15 +102,6 @@ class Tablero:
             screen.blit(NormalFont.render(player.nombre+": "+str(player.puntuacion), 1, player.color), (620, i))
             i+=120
 
-    def dibujarRectangulos(self):
-        #dibuja un rectangulo en donde se van a poner las fichas de los jugadores
-        rect1 = (750, 50, 250, 50)
-        rect2 = (750, 140, 250, 50)
-        rect3 = (750, 230, 250, 50)
-
-        pygame.draw.rect(screen, NEGRO, rect1, 2)
-        pygame.draw.rect(screen, NEGRO, rect2, 2)
-        pygame.draw.rect(screen, NEGRO, rect3, 2)
 
     def dibujarFichasDisponibles(self):
         #pone dentro del rectangulo las fichas que tienen los jugadores
@@ -111,12 +116,25 @@ class Tablero:
             cont1+=90
 
     def fichaSeleccionada(self,x,y):
-        for i in self.jugadores:
-            for j in i.fichasDisponibles:
-                print(j.rect)
-                if j.rect.collidepoint(x, y):
-                    fichaEl=j
-                    screen.blit(j.image,[610,400])
+                for i in self.jugadores[self.turno].fichasDisponibles:
+                    if (x>i.coor[0]) & (x<(i.coor[0]+50)):
+                        fichaEl=i
+                        screen.blit(i.image,[610,400])
+
+
+    '''def ponerFicha(self,x,y):
+        for i in self.matrizCasillas:
+            for j in i:
+                if ((x>=j.coor[0]) && (x<=(j.coor[0]+50)) && (y<=j.coor[1]) && (y<=(j.coor[1]+50))):
+                    self.matrizCasillas[i][j]='''
+
+
+    def verClick(self,x,y):
+        if(x>730):
+            self.fichaSeleccionada(x,y)
+        '''else:
+            self.ponerFicha(x,y)'''
+
                     
 
             
@@ -126,7 +144,7 @@ screen.blit(NormalFont.render("Ficha seleccionada: ", 1, NEGRO), (610, 350))
 
 #crea el tablero y llama a las funciones
 tablero=Tablero()
-tablero.dibujarRectangulos()
+
 
 #loop del juego
 while True:
@@ -136,6 +154,7 @@ while True:
     #tablero.updateJugadores()
 
     tablero.dibujarFichasDisponibles()
+    tablero.dibujarTablero()
 
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
@@ -143,7 +162,7 @@ while True:
         
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y=event.pos
-            tablero.fichaSeleccionada(x,y)
+            tablero.verClick(x,y)
             
 
     #se actualiza
