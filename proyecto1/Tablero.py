@@ -28,6 +28,8 @@ class Tablero:
         self.crearTablero()
         self.crearJugadores()
         self.turno=0
+        self.fichaEl=Casillas([0,0],"imagenes/cuadro.png")
+        self.xy=[]
         
         
         
@@ -80,14 +82,16 @@ class Tablero:
         
     def cambiarTurno(self):
         if(self.turno==2):
-            self.turna=0
+            self.turno=0
         else:
             self.turno+=1
 
-    def dibujarTablero(self):
-        for i in self.matrizCasillas:
-            for j in i:
-                screen.blit(j.image,j.coor)
+    def sacarFicha(self):
+        for i in self.jugadores[self.turno].fichasDisponibles:
+            if i.coor==self.xy:
+                self.jugadores[self.turno].fichasDisponibles.remove(i)
+                self.jugadores[self.turno].fichasDisponibles.append(self.fabricaDeFichas.bolsa.pop())
+                tablero.dibujarFichasDisponibles()
 
 
     def plusPuntuacion(self):            # metodo de prueba para aumentar la puntuacion de los jugadores y que se pueda actualizar
@@ -116,24 +120,30 @@ class Tablero:
             cont1+=90
 
     def fichaSeleccionada(self,x,y):
-                for i in self.jugadores[self.turno].fichasDisponibles:
-                    if (x>i.coor[0]) & (x<(i.coor[0]+50)):
-                        fichaEl=i
-                        screen.blit(i.image,[610,400])
+        for i in self.jugadores[self.turno].fichasDisponibles:
+            if (x>i.coor[0]) & (x<(i.coor[0]+50)):
+                self.xy=i.coor
+                self.fichaEl=i
+                screen.blit(i.image,[610,400])
 
 
-    '''def ponerFicha(self,x,y):
-        for i in self.matrizCasillas:
-            for j in i:
-                if ((x>=j.coor[0]) && (x<=(j.coor[0]+50)) && (y<=j.coor[1]) && (y<=(j.coor[1]+50))):
-                    self.matrizCasillas[i][j]='''
+    def ponerFicha(self,x,y):
+        for i in range(len(self.matrizCasillas)):
+            for j in range (len(self.matrizCasillas[i])):
+                if (x>=self.matrizCasillas[i][j].coor[0]) & (x<=(self.matrizCasillas[i][j].coor[0]+50)) & (y>=self.matrizCasillas[i][j].coor[1]) & (y<=(self.matrizCasillas[i][j].coor[1]+50)):
+                    self.sacarFicha()
+                    self.fichaEl.coor=self.matrizCasillas[i][j].coor
+                    self.matrizCasillas[i][j]=self.fichaEl
+                    screen.blit(self.fichaEl.image,self.fichaEl.coor)
+        print(self.turno)
+        self.cambiarTurno()
 
 
     def verClick(self,x,y):
         if(x>730):
             self.fichaSeleccionada(x,y)
-        '''else:
-            self.ponerFicha(x,y)'''
+        else:
+            self.ponerFicha(x,y)
 
                     
 
@@ -144,7 +154,7 @@ screen.blit(NormalFont.render("Ficha seleccionada: ", 1, NEGRO), (610, 350))
 
 #crea el tablero y llama a las funciones
 tablero=Tablero()
-
+tablero.dibujarFichasDisponibles()
 
 #loop del juego
 while True:
@@ -153,8 +163,6 @@ while True:
     #tablero.plusPuntuacion()
     #tablero.updateJugadores()
 
-    tablero.dibujarFichasDisponibles()
-    tablero.dibujarTablero()
 
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
