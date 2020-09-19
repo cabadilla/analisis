@@ -23,7 +23,6 @@ class Tablero:
     def __init__(self):
         self.fabricaDeFichas=fabricaDeFichas()
         self.matrizCasillas=[]
-        self.matrizLogica=[]
         self.jugadores=[]
         self.crearTablero()
         self.crearJugadores()
@@ -85,6 +84,7 @@ class Tablero:
             self.turno=0
         else:
             self.turno+=1
+
 
     def sacarFicha(self):
         for i in self.jugadores[self.turno].fichasDisponibles:

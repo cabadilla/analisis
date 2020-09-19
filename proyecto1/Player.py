@@ -11,3 +11,12 @@ class Player:
 
 	def aumentaPuntuacion(self, points): #metodo aumentaPuntuacion, ya que el juego se basa por puntos cada player tiene que tener su propia puntuacion
 		self.puntuacion+=points
+
+	
+	'''def jugarSoloA1(self):
+    	print("ds")
+
+	def jugarSoloA2(self):
+    	print("ds")'''
+
+    		
