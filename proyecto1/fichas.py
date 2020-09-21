@@ -7,6 +7,8 @@ class Fichas(Casillas):
         Casillas.__init__(self,c,"imagenes/"+form+col+".png")
         self.color=col
         self.forma=form
+        self.estado=1
+        
 
 
 

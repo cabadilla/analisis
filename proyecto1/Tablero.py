@@ -29,6 +29,9 @@ class Tablero:
         self.turno=0
         self.fichaEl=Casillas([0,0],"imagenes/cuadro.png")
         self.xy=[]
+        self.pixeles=50
+        self.colFil=11
+        self.fichasPuestas=[]
         
         
         
@@ -39,8 +42,40 @@ class Tablero:
                 casilla=Casillas([i*50,j*50],"imagenes/cuadro.png")
                 arreglo.append(casilla)
                 screen.blit(casilla.image,casilla.coor)
+                #casilla.cordenadasMatriz=(i,j)
             self.matrizCasillas.append(arreglo)
 
+
+    def agrandarTablero(self):
+        self.pixeles=self.pixeles-5
+        self.colFil+=1
+        nuevaMatriz=[]
+
+        rect = (0, 0, 600, 1000)
+        pygame.draw.rect(screen, BLANCO, rect,0)
+        #pygame.display.flip()
+
+        for i in range(0,self.colFil):
+            arreglo=[]
+            for j in range(0,self.colFil):
+                casilla=Casillas([i*self.pixeles,j*self.pixeles],"imagenes/cuadro.png")
+                arreglo.append(casilla)
+                screen.blit(casilla.image,casilla.coor)
+                casilla.cordenadasMatriz=(i,j)
+                pygame.display.flip()
+            nuevaMatriz.append(arreglo)
+        
+        self.matrizCasillas=nuevaMatriz
+
+        for i in self.fichasPuestas:
+            i.coor=self.matrizCasillas[i.cordenadasMatriz[0]][i.cordenadasMatriz[1]].coor
+            i.cambiarEscala((self.pixeles,self.pixeles))
+            self.matrizCasillas[i.cordenadasMatriz[0]][i.cordenadasMatriz[1]]=i
+            screen.blit(i.image,i.coor)
+
+        
+
+        
 
     def agregarFichas(self):
         array=[]
@@ -121,11 +156,41 @@ class Tablero:
 
     def fichaSeleccionada(self,x,y):
         for i in self.jugadores[self.turno].fichasDisponibles:
-            if (x>i.coor[0]) & (x<(i.coor[0]+50)):
+            if ((x>i.coor[0]) & (x<(i.coor[0]+50)) & (y>=i.coor[1]) & (y<=(i.coor[1]+50))):
                 self.xy=i.coor
                 self.fichaEl=i
                 screen.blit(i.image,[610,400])
 
+    #mueve las fichas dependiendo el numero lo hace a la derecha o a la izquierda
+    def moverFichas(self,x):
+        for i in self.matrizCasillas:
+            for j in i:
+                if j.estado!=0:
+                    if x==1:
+                        j.cordenadasMatriz=(j.cordenadasMatriz[0],j.cordenadasMatriz[1]+1)
+                    else:
+                        j.cordenadasMatriz=(j.cordenadasMatriz[0]+1,j.cordenadasMatriz[1])       
+     
+#calcula  si tiene que correr las fichas hacia algun lado
+    def calcular(self):
+        for i in self.matrizCasillas:
+            if (i[0].estado!=0):
+                self.moverFichas(1)
+                return True
+
+            elif (i[self.colFil-2].estado!=0):
+                return True
+        
+        for i in self.matrizCasillas[0]:
+            if (i.estado!=0):
+                self.moverFichas(0)
+                return True
+                
+        for i in self.matrizCasillas[self.colFil-1]:
+            if (i.estado!=0):
+                return True
+
+        return False
 
     def ponerFicha(self,x,y):
         for i in range(len(self.matrizCasillas)):
@@ -133,9 +198,10 @@ class Tablero:
                 if (x>=self.matrizCasillas[i][j].coor[0]) & (x<=(self.matrizCasillas[i][j].coor[0]+50)) & (y>=self.matrizCasillas[i][j].coor[1]) & (y<=(self.matrizCasillas[i][j].coor[1]+50)):
                     self.sacarFicha()
                     self.fichaEl.coor=self.matrizCasillas[i][j].coor
+                    self.fichaEl.cordenadasMatriz=(i,j)
                     self.matrizCasillas[i][j]=self.fichaEl
+                    self.fichasPuestas.append(self.fichaEl)
                     screen.blit(self.fichaEl.image,self.fichaEl.coor)
-        print(self.turno)
         self.cambiarTurno()
 
 
@@ -162,6 +228,10 @@ while True:
     #tablero.verClick()
     #tablero.plusPuntuacion()
     #tablero.updateJugadores()
+
+    #ve constantemente si tiene que correr las fichas
+    if tablero.calcular():
+        tablero.agrandarTablero()
 
 
     for event in pygame.event.get():
