@@ -9,6 +9,11 @@ class Casillas(pygame.sprite.Sprite):
         self.image=pygame.image.load(imagen)
         self.image=pygame.transform.scale(self.image,(50,50))
         self.coor=c
+        self.cordenadasMatriz=(0,0)
+        self.estado=0
+
+    def cambiarEscala(self,x):
+        self.image=pygame.transform.scale(self.image,x)
         
  
         
