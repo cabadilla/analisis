@@ -12,6 +12,17 @@ def printMatriz():
 	for i in range(len(matriz)):
 		print(matriz[i])
 
+def averigua_Soluciones(MatrizGeneral, MatrizFichas, n, ArrSoluciones):
+	if n==len(MatrizFichas):
+		print(ArrSoluciones)
+	else:
+		for i in range(MatrizFichas):
+
+def valid(MatrizGeneral, MatrizFichas):
+
+
+
+
 
 llenaMatriz(10, 11)
 root=Grafo()

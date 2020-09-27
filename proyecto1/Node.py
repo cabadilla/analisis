@@ -32,3 +32,7 @@ class Node():
 
 	def getAbajo(self):
 		return self.abajo                    #retorna el objeto que tenga abajo, None si no existe
+
+	def averiguaVacios(self):
+		for i in range(4):
+			

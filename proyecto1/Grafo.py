@@ -25,7 +25,7 @@ class Grafo():
 			self.matriz[fila][columna]=Nodo
 			return self.matriz
 		else:
-			return "Ya existe una pieza en esa casilla"
+			return False
 
 	def casilla_Vacia(self, fila, columna):                                   #funcion que verifica que la celda donde se va a insertar un nuevo nodo sea vacia
 		return self.matriz[fila][columna]==None
