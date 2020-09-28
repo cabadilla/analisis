@@ -12,7 +12,7 @@ NEGRO=[0,0,0]
 BLANCO=[255,255,255]
 
 #tamano ventana
-size = (1250,500)
+size = (1300,550)
 global screen
 screen=pygame.display.set_mode(size)
 screen.fill(BLANCO)
@@ -26,12 +26,13 @@ class Tablero:
         self.jugadores=[]
         self.crearTablero()
         self.crearJugadores()
-        self.turno=0
-        self.fichaEl=Casillas([0,0],"imagenes/cuadro.png")
+        self.turno=1
+        self.fichaEl=0
         self.xy=[]
         self.pixeles=50
         self.colFil=11
         self.fichasPuestas=[]
+     
         
         
         
@@ -47,22 +48,23 @@ class Tablero:
 
 
     def agrandarTablero(self):
-        self.pixeles=self.pixeles-5
+        self.pixeles=550//(self.colFil+1)
         self.colFil+=1
         nuevaMatriz=[]
-
-        rect = (0, 0, 600, 1000)
-        pygame.draw.rect(screen, BLANCO, rect,0)
+         
+        rect = (0, 0, 600,800)
+        screen.fill(pygame.Color(255,255,255), rect)
+        #pygame.draw.rect(screen, BLANCO, rect,0)
         #pygame.display.flip()
 
         for i in range(0,self.colFil):
             arreglo=[]
             for j in range(0,self.colFil):
                 casilla=Casillas([i*self.pixeles,j*self.pixeles],"imagenes/cuadro.png")
+                casilla.cambiarEscala((self.pixeles,self.pixeles))
                 arreglo.append(casilla)
                 screen.blit(casilla.image,casilla.coor)
                 casilla.cordenadasMatriz=(i,j)
-                pygame.display.flip()
             nuevaMatriz.append(arreglo)
         
         self.matrizCasillas=nuevaMatriz
@@ -72,8 +74,8 @@ class Tablero:
             i.cambiarEscala((self.pixeles,self.pixeles))
             self.matrizCasillas[i.cordenadasMatriz[0]][i.cordenadasMatriz[1]]=i
             screen.blit(i.image,i.coor)
+            pygame.display.flip()
 
-        
 
         
 
@@ -115,17 +117,21 @@ class Tablero:
 
         
     def cambiarTurno(self):
-        if(self.turno==2):
-            self.turno=0
+        if(self.turno==3):
+            self.turno=1
         else:
             self.turno+=1
 
+        screen.fill(pygame.Color(255,255,255), (900,400,300,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
+        NormalFont=pygame.font.SysFont("Times New Roman", 22)
+        screen.blit(NormalFont.render("Turno del jugador: " + str(self.turno),1,NEGRO), (900, 400))
+
 
     def sacarFicha(self):
-        for i in self.jugadores[self.turno].fichasDisponibles:
+        for i in self.jugadores[self.turno-1].fichasDisponibles:
             if i.coor==self.xy:
-                self.jugadores[self.turno].fichasDisponibles.remove(i)
-                self.jugadores[self.turno].fichasDisponibles.append(self.fabricaDeFichas.bolsa.pop())
+                self.jugadores[self.turno-1].fichasDisponibles.remove(i)
+                self.jugadores[self.turno-1].fichasDisponibles.append(self.fabricaDeFichas.bolsa.pop())
                 tablero.dibujarFichasDisponibles()
 
 
@@ -135,7 +141,7 @@ class Tablero:
 
     def updateJugadores(self):           #metodo que actualiza los labels de cada jugador
         i=22
-        screen.fill(pygame.Color(255,255,255), (600,20,600,270)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
+        screen.fill(pygame.Color(255,255,255), (550, 400, 50,50)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
         for player in self.jugadores:
             screen.blit(NormalFont.render(player.nombre+": "+str(player.puntuacion), 1, player.color), (620, i))
@@ -155,7 +161,7 @@ class Tablero:
             cont1+=90
 
     def fichaSeleccionada(self,x,y):
-        for i in self.jugadores[self.turno].fichasDisponibles:
+        for i in self.jugadores[self.turno-1].fichasDisponibles:
             if ((x>i.coor[0]) & (x<(i.coor[0]+50)) & (y>=i.coor[1]) & (y<=(i.coor[1]+50))):
                 self.xy=i.coor
                 self.fichaEl=i
@@ -178,7 +184,7 @@ class Tablero:
                 self.moverFichas(1)
                 return True
 
-            elif (i[self.colFil-2].estado!=0):
+            elif (i[self.colFil-1].estado!=0):
                 return True
         
         for i in self.matrizCasillas[0]:
@@ -193,16 +199,21 @@ class Tablero:
         return False
 
     def ponerFicha(self,x,y):
-        for i in range(len(self.matrizCasillas)):
-            for j in range (len(self.matrizCasillas[i])):
-                if (x>=self.matrizCasillas[i][j].coor[0]) & (x<=(self.matrizCasillas[i][j].coor[0]+50)) & (y>=self.matrizCasillas[i][j].coor[1]) & (y<=(self.matrizCasillas[i][j].coor[1]+50)):
-                    self.sacarFicha()
-                    self.fichaEl.coor=self.matrizCasillas[i][j].coor
-                    self.fichaEl.cordenadasMatriz=(i,j)
-                    self.matrizCasillas[i][j]=self.fichaEl
-                    self.fichasPuestas.append(self.fichaEl)
-                    screen.blit(self.fichaEl.image,self.fichaEl.coor)
-        self.cambiarTurno()
+        if self.fichaEl!=0:
+            for i in range(len(self.matrizCasillas)):
+                for j in range (len(self.matrizCasillas[i])):
+                    if (x>=self.matrizCasillas[i][j].coor[0]) & (x<=(self.matrizCasillas[i][j].coor[0]+self.pixeles)) & (y>=self.matrizCasillas[i][j].coor[1]) & (y<=(self.matrizCasillas[i][j].coor[1]+self.pixeles)):
+                        self.sacarFicha()
+                        self.fichaEl.coor=self.matrizCasillas[i][j].coor
+                        self.fichaEl.cordenadasMatriz=(i,j)
+                        self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
+                        self.matrizCasillas[i][j]=self.fichaEl
+                        self.fichasPuestas.append(self.fichaEl)
+                        screen.blit(self.fichaEl.image,self.fichaEl.coor)
+                        self.fichaEl=0
+                        self.cambiarTurno()
+                    
+
 
 
     def verClick(self,x,y):
@@ -230,6 +241,14 @@ while True:
     #tablero.updateJugadores()
 
     #ve constantemente si tiene que correr las fichas
+    casilla=Casillas([610,400],"imagenes/cuadro.png")
+    rect = (610, 400, 50,50)
+    
+    if tablero.fichaEl==0:
+        screen.fill(pygame.Color(255,255,255), rect)
+        screen.blit(casilla.image,casilla.coor)
+        
+
     if tablero.calcular():
         tablero.agrandarTablero()
 
