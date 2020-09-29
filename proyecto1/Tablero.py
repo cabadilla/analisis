@@ -32,6 +32,7 @@ class Tablero:
         self.pixeles=50
         self.colFil=11
         self.fichasPuestas=[]
+        self.crearBoton()
      
         
         
@@ -77,7 +78,12 @@ class Tablero:
             pygame.display.flip()
 
 
-        
+    def crearBoton(self):
+
+        boton=pygame.image.load("imagenes/boton.png")
+        boton=pygame.transform.scale(boton,(80,80))
+        screen.blit(boton,[1100,400])
+
 
     def agregarFichas(self):
         array=[]
@@ -122,9 +128,9 @@ class Tablero:
         else:
             self.turno+=1
 
-        screen.fill(pygame.Color(255,255,255), (900,400,300,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
+        screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
-        screen.blit(NormalFont.render("Turno del jugador: " + str(self.turno),1,NEGRO), (900, 400))
+        screen.blit(NormalFont.render("Turno del jugador: " + str(self.turno),1,NEGRO), (800, 450))
 
 
     def sacarFicha(self):
@@ -211,14 +217,16 @@ class Tablero:
                         self.fichasPuestas.append(self.fichaEl)
                         screen.blit(self.fichaEl.image,self.fichaEl.coor)
                         self.fichaEl=0
-                        self.cambiarTurno()
                     
 
 
 
     def verClick(self,x,y):
         if(x>730):
-            self.fichaSeleccionada(x,y)
+            if (((x>1100) & (x<=1180)) & ((y>400) & (y<=480))):
+                self.cambiarTurno()
+            else:
+                self.fichaSeleccionada(x,y)
         else:
             self.ponerFicha(x,y)
 
