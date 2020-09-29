@@ -121,12 +121,18 @@ class Tablero:
         self.jugadores.append(A1player)
         self.jugadores.append(A2player)
 
+    def dibujarJugada(self,jugada):
+        print("fdf")
         
     def cambiarTurno(self):
         if(self.turno==3):
             self.turno=1
         else:
             self.turno+=1
+
+
+        if self.turno-1>0:
+            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo())
 
         screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)

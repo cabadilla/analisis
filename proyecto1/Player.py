@@ -8,15 +8,17 @@ class Player:
 		self.fichasDisponibles=[]
 		self.color=col
 		self.rectFichas=r
+		self.algoritmo=1
 
 	def aumentaPuntuacion(self, points): #metodo aumentaPuntuacion, ya que el juego se basa por puntos cada player tiene que tener su propia puntuacion
 		self.puntuacion+=points
 
 	
-	'''def jugarSoloA1(self):
-    	print("ds")
+	def jugarSolo(self):
+		print("dd")
 
-	def jugarSoloA2(self):
-    	print("ds")'''
-
-    		
+	def algoritmo1(self):
+		print("fd")
+	
+	def algoritmo2(self):
+		print("fddg")
