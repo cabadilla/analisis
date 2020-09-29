@@ -87,7 +87,7 @@ class Tablero:
 
     def agregarFichas(self):
         array=[]
-        for i in range(5):
+        for i in range(6):
             array.append(self.fabricaDeFichas.bolsa.pop())
 
         return array

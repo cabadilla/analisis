@@ -47,6 +47,6 @@ class fabricaDeFichas:
 
 
     def crearBolsa(self):
-        for i in range (0,104):
+        for i in range (0,108):
             self.bolsa.append(Fichas([0,0],self.color(),self.forma()))
 
