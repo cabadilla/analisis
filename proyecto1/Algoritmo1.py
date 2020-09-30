@@ -6,8 +6,7 @@ Nodo.columna
 Ficha.forma
 Ficha.color
 '''
-
-def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N):
+def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matriz):
 	'''
 	Objetivo: Busca en forma de un algoritmo de Backtracking la mejor solucion que se pueda aplicar dentro del
 	tablero de juego, esto para que el algoritmo pueda jugar contra el Jugador
@@ -17,12 +16,13 @@ def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N):
 	if N>len(Nodos)-1:
 		return MejorSolucion #Si ya se recorrieron todos los nodos del Grafo, se retorna la mejor solucion que se encontro
 	else:
-		SolucionPrincipal=solucionesCasilla(Nodo[N], FichasMano, []) #Saca la mejor solucion del nodo actual
+		SolucionPrincipal=solucionesCasilla(Nodos[N], FichasMano, [], [], Matriz) #Saca la mejor solucion del nodo actual
 		if len(SolucionPrincipal)>len(MejorSolucion): #Si la solucion actual es mejor que la que ahorita esta, se cambia la solucion Final
 			MejorSolucion=SolucionPrincipal
-		buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1) #Si no es mejor, se cambia de nodo y se continua
+			print(MejorSolucion)
+		buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz) #Si no es mejor, se cambia de nodo y se continua
 
-def solucionesCasilla(NodoMatriz, FichasMano, SolucionActual, SolucionFinal):
+def solucionesCasilla(NodoMatriz, FichasMano, SolucionActual, SolucionFinal, Matriz):
 	'''
 	Objetivo: Busca la mejor solucion que tenga el nodo que esta siendo evaluado
 	Recibe: NodoMatriz (El nodo de la matriz que esta siendo evaluado), FichasMano (Fichas que tenga el algoritmo disponibles), SolucionActual (La solucion que se cree con cada corrida), SolucionFinal (Solucion que se retornara)
@@ -30,24 +30,25 @@ def solucionesCasilla(NodoMatriz, FichasMano, SolucionActual, SolucionFinal):
 	'''
 	if Jugada(NodoMatriz, FichasMano): #Si existe alguna posibilidad con las fichas que se tienen en la mano, sigue
 		if NodoMatriz.getIzquierda()==None: #Verifica todas las jugadas hacia la izquierda de ese nodo
-			SolucionActual=Backtracking((NodoMatriz.fila, NodoMatriz.columna-1), FichasMano, "Izquierda", 0) #Busca la mejor solucion hacia la izquierda
+			SolucionActual=Backtracking((NodoMatriz.getFila(), NodoMatriz.getColumna()-1), FichasMano, "Izquierda", [], 0, Matriz) #Busca la mejor solucion hacia la izquierda
 			if len(SolucionActual)>len(SolucionFinal):
 				SolucionFinal=SolucionActual
 		if NodoMatriz.getDerecha()==None: #Verifica todas las jugadas hacia la derecha de ese nodo
-			SolucionActual=Backtracking((NodoMatriz.fila, NodoMatriz.columna+1), FichasMano, "Derecha", 0) #Busca la mejor solucion hacia la derecha
+			SolucionActual=Backtracking((NodoMatriz.getFila(), NodoMatriz.getColumna()+1), FichasMano, "Derecha", [], 0, Matriz) #Busca la mejor solucion hacia la derecha
 			if len(SolucionActual)>len(SolucionFinal):
 				SolucionFinal=SolucionActual
 		if NodoMatriz.getArriba()==None: #Verifica todas las jugadas abajo de ese nodo
-			SolucionActual=Backtracking((NodoMatriz.fila-1, NodoMatriz.columna), FichasMano, "Arriba", 0) #Busca la mejor solucion hacia arriba
+			SolucionActual=Backtracking((NodoMatriz.getFila()-1, NodoMatriz.getColumna()), FichasMano, "Arriba", [], 0, Matriz) #Busca la mejor solucion hacia arriba
 			if len(SolucionActual)>len(SolucionFinal):
 				SolucionFinal=SolucionActual
 		if NodoMatriz.getAbajo()==None: #Verifica todas las jugadas hacia abajo de ese nodo
-			SolucionActual=Backtracking((NodoMatriz.fila+1, NodoMatriz.columna), FichasMano, "Abajo", 0) #Busca la mejor solucion hacia abajo
+			SolucionActual=Backtracking((NodoMatriz.getFila()+1, NodoMatriz.getColumna()), FichasMano, "Abajo", [], 0, Matriz) #Busca la mejor solucion hacia abajo
 			if len(SolucionActual)>len(SolucionFinal):
 				SolucionFinal=SolucionActual
 	return SolucionFinal #Cuando encuentre la mejor solucion de ese nodo la retorna
 
-def Backtracking(Posicion, FichasMano, Direccion, Solucion, n):
+
+def Backtracking(Posicion, FichasMano, Direccion, Solucion, n, Matriz):
 	'''
 	Objetivo: En una forma de backtracking, creando un arbol con muchas soluciones, con cada corrida se 
 	actualiza cual es la mejor solucion y esta es la que se retornara al final
@@ -55,33 +56,33 @@ def Backtracking(Posicion, FichasMano, Direccion, Solucion, n):
 	Retorna: La mejor solucion que haya creado para esa posicion
 	'''
 	if Direccion=="Izquierda": #Si la direccion es hacia la izquierda prueba todas las fichas que tiene hacia la izquierda 
-		if valido(): #Si se puede poner la ficha en esa direccion sigue
+		if valido(Matriz, Posicion, FichasMano[n], Direccion): #Si se puede poner la ficha en esa direccion sigue
 			Solucion.append((n, Posicion)) #Se coloca la ficha en la solucion y se continua
 			Matriz[Posicion[0]][Posicion[1]]=FichasMano[n] #Se coloca la ficha en la matriz para poder simular la jugada completa
-			Backtracking((Posicion[0], Posicion[1]-1), FichasMano, Direccion, Solucion, n+1) #Se repite con otra ficha
-		elif n<len(FichasMano): #Si no se pudo poner la ficha y n sigue siendo menor que la cantidad de fichas, se prueba con otra ficha
-			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1)
+			Backtracking((Posicion[0], Posicion[1]-1), FichasMano, Direccion, Solucion, n+1, Matriz) #Se repite con otra ficha
+		elif n<len(FichasMano)-1: #Si no se pudo poner la ficha y n sigue siendo menor que la cantidad de fichas, se prueba con otra ficha
+			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1, Matriz)
 	elif Direccion=="Derecha":
-		if valido():
+		if valido(Matriz, Posicion, FichasMano[n], Direccion):
 			Solucion.append(FichasMano[n])
 			Matriz[Posicion[0]][Posicion[1]]=FichasMano[n]
-			Backtracking((Posicion[0], Posicion[1]+1), FichasMano, Direccion, Solucion, n+1)
-		elif n<len(FichasMano):
-			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1)
+			Backtracking((Posicion[0], Posicion[1]+1), FichasMano, Direccion, Solucion, n+1, Matriz)
+		elif n<len(FichasMano)-1:
+			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1, Matriz)
 	elif Direccion=="Arriba":
-		if valido():
+		if valido(Matriz, Posicion, FichasMano[n], Direccion):
 			Solucion.append(FichasMano[n])
 			Matriz[Posicion[0]][Posicion[1]]=FichasMano[n]
-			Backtracking((Posicion[0]-1, Posicion[1]), FichasMano, Direccion, Solucion, n+1)
-		elif n<len(FichasMano):
-			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1)
+			Backtracking((Posicion[0]-1, Posicion[1]), FichasMano, Direccion, Solucion, n+1, Matriz)
+		elif n<len(FichasMano)-1:
+			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1, Matriz)
 	else:
-		if valido():
+		if valido(Matriz, Posicion, FichasMano[n], Direccion):
 			Solucion.append(FichasMano[n])
 			Matriz[Posicion[0]][Posicion[1]]=FichasMano[n]
-			Backtracking((Posicion[0]+1, Posicion[1]), FichasMano, Direccion, Solucion, n+1)
-		elif n<len(FichasMano):
-			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1)
+			Backtracking((Posicion[0]+1, Posicion[1]), FichasMano, Direccion, Solucion, n+1, Matriz)
+		elif n<len(FichasMano)-1:
+			Backtracking(Posicion, FichasMano, Direccion, Solucion, n+1, Matriz)
 	return Solucion	#Si se acabaron las pruebas se retorna la solucion
 
 def valido(Matriz, Posicion, Ficha, Direccion):
@@ -94,27 +95,27 @@ def valido(Matriz, Posicion, Ficha, Direccion):
 	fila=Posicion[0] #fila donde se esta posicionando el puntero para poner la ficha
 	columna=Posicion[1] #columna donde se esta posicionando el puntero para poner la ficha
 	if Direccion=="Izquierda" or Direccion=="Derecha": #ya que si es se va a poner hacia la izquierda o hacia la derecha solo se puede en esa posicion, siempre se tienen que fijar en las fichas que estan hacia la izquierda y hacia la derecha
-		for i in range(columna, len(matriz(fila))): #desde la columna actual hasta el fin del tamagno de la matriz
+		for i in range(columna, len(Matriz[fila])): #desde la columna actual hasta el fin del tamagno de la matriz
 			if Matriz[fila][i]==None: #Si encuentra un None quiere decir que ya no hay mas nodos para recorrer
 				break
-			if Matriz[fila][i].color==Ficha.color and Matriz[fila][i].forma==Ficha.forma: #por cada nodo que recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
+			if Matriz[fila][i].getColor()==Ficha.getColor() and Matriz[fila][i].getForma()==Ficha.getForma(): #por cada nodo que recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
 				return False
 		for i in range(columna, 0, -1): #desde la columna actual hasta el inicio del tamagno de la matriz
 			if Matriz[fila][i]==None:
 				break
-			if Matriz[fila][i].color==Ficha.color and Matriz[fila][i].forma==Ficha.forma: #por cada nodo que se recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
+			if Matriz[fila][i].getColor()==Ficha.getColor() and Matriz[fila][i].getForma()==Ficha.getForma(): #por cada nodo que se recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
 				return False
 		return (validaFigura(Matriz[fila][columna+1], Ficha) or validaColor(Matriz[fila][columna+1], Ficha)) if (Direccion=="Izquierda") else (validaFigura(Matriz[fila][columna-1], Ficha) or validaColor(Matriz[fila][columna-1], Ficha)) #si la ficha no se encuentra, vamos a retornar la validez del movimiento(si el color== and figura!= or color!= and figura==)
 	else: #si la direccion no era izquierda o derecha, se deduce que es arriba o abajo
 		for i in range(fila, len(Matriz)): #desde la fila actual hasta el final del tamagno de la matriz
 			if Matriz[i][columna]==None:
 				break
-			if Matriz[i][columna].color==Ficha.color and Matriz[i][columna].fomra==Ficha.forma: #por cada nodo que se recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
+			if Matriz[i][columna].getColor()==Ficha.getColor() and Matriz[i][columna].getForma()==Ficha.getForma(): #por cada nodo que se recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
 				return False
 		for i in range(fila, 0, -1): #desde la fila actual hasta el inicio del tamagno de la matriz
 			if Matriz[i][columna]==None: #si encuentra un None quiere decir que ya no hay mas nodos para recorrer
 				break
-			if Matriz[i][columna].color==Ficha.color and Matriz[i][columna].fomra==Ficha.forma: #por cada nodo que recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
+			if Matriz[i][columna].getColor()==Ficha.getColor() and Matriz[i][columna].getForma()==Ficha.getForma(): #por cada nodo que recorra tiene que verificar si la ficha que vamos a colocar ya se encuentra
 				return False
 		return (validaFigura(Matriz[fila+1][columna], Ficha) or validaColor(Matriz[fila+1][columna], Ficha)) if (Direccion=="Arriba") else (validaFigura(Matriz[fila-1][columna], Ficha) or validaColor(Matriz[fila-1][columna], Ficha))#si la ficha no se encuentra, vamos a retornar la validez del movimiento(si el color== and figura!= or color!= and figura==)
 
@@ -138,7 +139,7 @@ def validaFigura(Nodo, Ficha):
 	Recibe: Nodo actual, ficha actual
 	Retorna: True si se cumple, False si no
 	'''
-	return Nodo.forma==Ficha.forma and Nodo.color!=Ficha.color
+	return Nodo.getForma()==Ficha.getForma() and Nodo.getColor()!=Ficha.getColor()
 
 def validaColor(Nodo, Ficha):
 	'''
@@ -146,4 +147,4 @@ def validaColor(Nodo, Ficha):
 	Recibe: Nodo actual, ficha actual
 	Retorna: True si se cumple, False si no
 	'''
-	return Nodo.color==Ficha.color and Nodo.forma!=Ficha.forma
+	return Nodo.getColor()==Ficha.getColor() and Nodo.getForma()!=Ficha.getForma()

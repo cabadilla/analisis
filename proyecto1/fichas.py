@@ -9,8 +9,11 @@ class Fichas(Casillas):
         self.forma=form
         self.estado=1
         
+    def getColor(self):
+        return self.color
 
-
+    def getForma(self):
+        return self.forma
 
 class fabricaDeFichas:
     def __init__(self):
@@ -43,8 +46,6 @@ class fabricaDeFichas:
         }
 
         return switch[num]    
-
-
 
     def crearBolsa(self):
         for i in range (0,104):

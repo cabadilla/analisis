@@ -1,13 +1,13 @@
 class Node():
-	def __init__(self, fila, columna):
+	def __init__(self, fila, columna, ficha):
 		self.izquierda=None                  #rama que va a apuntar siempre a los nodos ubicados a la izquierda
 		self.derecha=None                    #rama que va a apuntar siempre a los nodos ubicados a la derecha
 		self.arriba=None                     #rama que va a apuntar siempre a los nodos ubicados abajo
 		self.abajo=None                      #rama que va a apuntar siempre a los nodos ubicados arriba
-		self.color=None                      #atributo color que simboliza el color de la ficha puesta
-		self.forma=None                      #atributo forma que simboliza la forma de la ficha puesta
-		self.fila=fila                       #atributo fila que simboliza la fila de la casilla donde fue puesta
-		self.columna=columna                 #atributo columna que simboliza la columna de la casilla donde fue puesta
+		self.color=ficha.getColor()          #atributo color que simboliza el color de la ficha puesta
+		self.forma=ficha.getForma()          #atributo forma que simboliza la forma de la ficha puesta
+		self.fila=fila
+		self.columna=columna
 
 	def setIzquierda(self, Nodo):
 		self.izquierda=Nodo                  #setea el puntero de la izquierda para que apunte al nodo que se encuentra a la izquierda
@@ -21,6 +21,12 @@ class Node():
 	def setAbajo(self, Nodo):
 		self.abajo=Nodo                      #setea el puntero de abajo para que apunte al nodo que se encuentra a la izquierda
 
+	def setFila(self, fila):                 #setea la nueva fila del nodo
+		self.fila=fila
+
+	def setColumna(self, columna):           #setea la nueva oclumna del nodo
+		self.columna=columna
+
 	def getIzquierda(self):
 		return self.izquierda                #retorna el objeto que tenga a la izquierda, None si no existe
 
@@ -33,6 +39,17 @@ class Node():
 	def getAbajo(self):
 		return self.abajo                    #retorna el objeto que tenga abajo, None si no existe
 
-	def averiguaVacios(self):
-		for i in range(4):
+	def getFila(self):                       #retorna la fila donde se encuentra el nodo
+		return self.fila
+
+	def getColumna(self):                    #retorna la columna donde se encuentra el nodo
+		return self.columna
+
+	def getColor(self):                      #retorna el color que tenga la ficha en este nodo
+		return self.color
+
+	def getForma(self):                      #retorna la forma que tenga la ficha en este nodo
+		return self.forma
+
+
 			

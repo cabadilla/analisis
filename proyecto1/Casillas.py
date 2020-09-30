@@ -4,7 +4,7 @@ from pygame import surface
 
 pygame.init()
 
-class Casillas(pygame.sprite.Sprite):
+class Casillas():
     def __init__(self,c,imagen):
         self.image=pygame.image.load(imagen)
         self.image=pygame.transform.scale(self.image,(50,50))

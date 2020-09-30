@@ -4,6 +4,7 @@ from Casillas import Casillas
 from Player import Player
 from pygame import surface
 from fichas import *
+from Grafo import *
 
 pygame.init()
 
@@ -21,22 +22,21 @@ global fichaEl
 
 class Tablero:
     def __init__(self):
+        self.Grafo=Grafo()
+        self.fichasPuestas=[]
         self.fabricaDeFichas=fabricaDeFichas()
         self.matrizCasillas=[]
         self.jugadores=[]
-        self.crearTablero()
-        self.crearJugadores()
         self.turno=1
         self.fichaEl=0
         self.xy=[]
         self.pixeles=50
         self.colFil=11
-        self.fichasPuestas=[]
+        self.crearTablero()
+        self.crearJugadores()
         self.crearBoton()
+
      
-        
-        
-        
     def crearTablero(self):
         for i in range(0,11):
             arreglo=[]
@@ -44,9 +44,9 @@ class Tablero:
                 casilla=Casillas([i*50,j*50],"imagenes/cuadro.png")
                 arreglo.append(casilla)
                 screen.blit(casilla.image,casilla.coor)
-                #casilla.cordenadasMatriz=(i,j)
+                casilla.cordenadasMatriz=(i,j)
             self.matrizCasillas.append(arreglo)
-
+        self.Grafo.mueveNodos(self.fichasPuestas, 11, 11)
 
     def agrandarTablero(self):
         self.pixeles=550//(self.colFil+1)
@@ -77,9 +77,10 @@ class Tablero:
             screen.blit(i.image,i.coor)
             pygame.display.flip()
 
+        self.Grafo.mueveNodos(self.fichasPuestas, len(self.matrizCasillas), len(self.matrizCasillas[0]))
+
 
     def crearBoton(self):
-
         boton=pygame.image.load("imagenes/boton.png")
         boton=pygame.transform.scale(boton,(80,80))
         screen.blit(boton,[1100,400])
@@ -104,13 +105,13 @@ class Tablero:
         pygame.draw.rect(screen, NEGRO, rect2, 2)
         pygame.draw.rect(screen, NEGRO, rect3, 2)
 
-        Hplayer=Player("Player", pygame.Color(51, 133, 255),rect1)                  #Creacion del jugador Humano
+        Hplayer=Player("Player", pygame.Color(51, 133, 255),rect1,0)                  #Creacion del jugador Humano
         Hplayer.fichasDisponibles=self.agregarFichas()
 
-        A1player=Player("Algoritmo 1", pygame.Color(255, 106, 51),rect2)            #Creacion del jugador Algoritmo 1
+        A1player=Player("Algoritmo 1", pygame.Color(255, 106, 51),rect2,1)            #Creacion del jugador Algoritmo 1
         A1player.fichasDisponibles=self.agregarFichas()
 
-        A2player=Player("Algoritmo 2", pygame.Color(157, 255, 51),rect3)            #Creacion del jugador Algoritmo 2
+        A2player=Player("Algoritmo 2", pygame.Color(157, 255, 51),rect3,2)            #Creacion del jugador Algoritmo 2
         A2player.fichasDisponibles=self.agregarFichas()
        
         NormalFont=pygame.font.SysFont("monospace", 18)
@@ -129,15 +130,12 @@ class Tablero:
             self.turno=1
         else:
             self.turno+=1
-
-
         if self.turno-1>0:
-            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo())
+            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), self.Grafo.getMatriz()))
 
         screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
         screen.blit(NormalFont.render("Turno del jugador: " + str(self.turno),1,NEGRO), (800, 450))
-
 
     def sacarFicha(self):
         for i in self.jugadores[self.turno-1].fichasDisponibles:
@@ -158,7 +156,6 @@ class Tablero:
         for player in self.jugadores:
             screen.blit(NormalFont.render(player.nombre+": "+str(player.puntuacion), 1, player.color), (620, i))
             i+=120
-
 
     def dibujarFichasDisponibles(self):
         #pone dentro del rectangulo las fichas que tienen los jugadores
@@ -220,13 +217,11 @@ class Tablero:
                         self.fichaEl.cordenadasMatriz=(i,j)
                         self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
                         self.matrizCasillas[i][j]=self.fichaEl
+                        self.Grafo.insertar(i, j, self.fichaEl)
                         self.fichasPuestas.append(self.fichaEl)
                         screen.blit(self.fichaEl.image,self.fichaEl.coor)
                         self.fichaEl=0
                     
-
-
-
     def verClick(self,x,y):
         if(x>730):
             if (((x>1100) & (x<=1180)) & ((y>400) & (y<=480))):
@@ -235,10 +230,7 @@ class Tablero:
                 self.fichaSeleccionada(x,y)
         else:
             self.ponerFicha(x,y)
-
-                    
-
-            
+      
 #letras de donde va la ficha a escoger
 NormalFont=pygame.font.SysFont("monospace", 18)
 screen.blit(NormalFont.render("Ficha seleccionada: ", 1, NEGRO), (610, 350))
