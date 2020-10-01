@@ -20,6 +20,7 @@ def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matr
 		if len(SolucionPrincipal)>len(MejorSolucion): #Si la solucion actual es mejor que la que ahorita esta, se cambia la solucion Final
 			MejorSolucion=SolucionPrincipal
 			print(MejorSolucion)
+			return(MejorSolucion)
 		buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz) #Si no es mejor, se cambia de nodo y se continua
 
 def solucionesCasilla(NodoMatriz, FichasMano, SolucionActual, SolucionFinal, Matriz):

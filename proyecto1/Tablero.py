@@ -41,12 +41,15 @@ class Tablero:
         for i in range(0,11):
             arreglo=[]
             for j in range(0,11):
-                casilla=Casillas([i*50,j*50],"imagenes/cuadro.png")
+                casilla=Casillas([j*50,i*50],"imagenes/cuadro.png")
                 arreglo.append(casilla)
                 screen.blit(casilla.image,casilla.coor)
                 casilla.cordenadasMatriz=(i,j)
             self.matrizCasillas.append(arreglo)
         self.Grafo.mueveNodos(self.fichasPuestas, 11, 11)
+
+        
+        
 
     def agrandarTablero(self):
         self.pixeles=550//(self.colFil+1)
@@ -61,7 +64,7 @@ class Tablero:
         for i in range(0,self.colFil):
             arreglo=[]
             for j in range(0,self.colFil):
-                casilla=Casillas([i*self.pixeles,j*self.pixeles],"imagenes/cuadro.png")
+                casilla=Casillas([j*self.pixeles,i*self.pixeles],"imagenes/cuadro.png")
                 casilla.cambiarEscala((self.pixeles,self.pixeles))
                 arreglo.append(casilla)
                 screen.blit(casilla.image,casilla.coor)
@@ -77,7 +80,7 @@ class Tablero:
             screen.blit(i.image,i.coor)
             pygame.display.flip()
 
-        self.Grafo.mueveNodos(self.fichasPuestas, len(self.matrizCasillas), len(self.matrizCasillas[0]))
+        self.Grafo.mueveNodos(self.fichasPuestas, self.colFil, self.colFil)
 
 
     def crearBoton(self):
@@ -123,9 +126,27 @@ class Tablero:
         self.jugadores.append(A2player)
 
     def dibujarJugada(self,jugada):
-        print("fdf")
+        print(jugada)
+        for i in jugada:
+            self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
+            self.fichaEl.cordenadasMatriz=[i[1][0],i[1][1]]
+            self.fichaEl.coor=self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]].coor
+            self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
+            self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]]=self.fichaEl
+            self.fichasPuestas.append(self.fichaEl)
+            screen.blit(self.fichaEl.image,self.fichaEl.coor)
+
+            
+
+            self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
+
+
+        self.dibujarFichasDisponibles()
+
+            
         
     def cambiarTurno(self):
+        self.fichaEl=0
         if(self.turno==3):
             self.turno=1
         else:
@@ -209,20 +230,26 @@ class Tablero:
 
     def ponerFicha(self,x,y):
         if self.fichaEl!=0:
-            for i in range(len(self.matrizCasillas)):
-                for j in range (len(self.matrizCasillas[i])):
+            for i in range(self.colFil):
+                for j in range (self.colFil):
                     if (x>=self.matrizCasillas[i][j].coor[0]) & (x<=(self.matrizCasillas[i][j].coor[0]+self.pixeles)) & (y>=self.matrizCasillas[i][j].coor[1]) & (y<=(self.matrizCasillas[i][j].coor[1]+self.pixeles)):
-                        self.sacarFicha()
-                        self.fichaEl.coor=self.matrizCasillas[i][j].coor
-                        self.fichaEl.cordenadasMatriz=(i,j)
-                        self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
-                        self.matrizCasillas[i][j]=self.fichaEl
-                        self.Grafo.insertar(i, j, self.fichaEl)
-                        self.fichasPuestas.append(self.fichaEl)
-                        screen.blit(self.fichaEl.image,self.fichaEl.coor)
-                        self.fichaEl=0
+                        if(self.matrizCasillas[i][j].estado==0):
+                            self.sacarFicha()
+                            self.fichaEl.coor=self.matrizCasillas[i][j].coor
+                            self.fichaEl.cordenadasMatriz=(i,j)
+                            self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
+                            self.matrizCasillas[i][j]=self.fichaEl
+                            self.Grafo.insertar(i, j, self.fichaEl)
+                            self.fichasPuestas.append(self.fichaEl)
+                            screen.blit(self.fichaEl.image,self.fichaEl.coor)
+                            self.fichaEl=0
+        '''for i in self.matrizCasillas:
+            for j in i:
+                print(str(j.cordenadasMatriz)+"-"+str(j.estado))
+            print()'''
                     
     def verClick(self,x,y):
+        print(x,y)
         if(x>730):
             if (((x>1100) & (x<=1180)) & ((y>400) & (y<=480))):
                 self.cambiarTurno()

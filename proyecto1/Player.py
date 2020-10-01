@@ -17,15 +17,15 @@ class Player:
 		if self.getAlgoritmo()==1:
 			return self.algoritmo1(Nodos, Matriz)
 		else:
-			return self.algoritmo2()
+			return self.algoritmo1(Nodos, Matriz)
 
 	def algoritmo1(self, Nodos, Matriz):
 		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, Matriz)
-		print(Soluciones)
-		return
+		return Soluciones
 	
 	def algoritmo2(self):
 		print("fddg")
+		
 
 	def getFichasDisponibles(self):
 		return self.fichasDisponibles
