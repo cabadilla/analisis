@@ -36,7 +36,6 @@ class Tablero:
         self.crearJugadores()
         self.crearBoton()
 
-     
     def crearTablero(self):
         for i in range(0,11):
             arreglo=[]
@@ -47,9 +46,6 @@ class Tablero:
                 casilla.cordenadasMatriz=(i,j)
             self.matrizCasillas.append(arreglo)
         self.Grafo.mueveNodos(self.fichasPuestas, 11, 11)
-
-        
-        
 
     def agrandarTablero(self):
         self.pixeles=550//(self.colFil+1)
@@ -82,12 +78,10 @@ class Tablero:
 
         self.Grafo.mueveNodos(self.fichasPuestas, self.colFil, self.colFil)
 
-
     def crearBoton(self):
         boton=pygame.image.load("imagenes/boton.png")
         boton=pygame.transform.scale(boton,(80,80))
         screen.blit(boton,[1100,400])
-
 
     def agregarFichas(self):
         array=[]
@@ -126,25 +120,19 @@ class Tablero:
         self.jugadores.append(A2player)
 
     def dibujarJugada(self,jugada):
-        print(jugada)
-        for i in jugada:
-            self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
-            self.fichaEl.cordenadasMatriz=[i[1][0],i[1][1]]
-            self.fichaEl.coor=self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]].coor
-            self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
-            self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]]=self.fichaEl
-            self.fichasPuestas.append(self.fichaEl)
-            screen.blit(self.fichaEl.image,self.fichaEl.coor)
+        if jugada!=None:
+            for i in jugada:
+                self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
+                self.Grafo.insertar(i[1][0], i[1][1], self.fichaEl)
+                self.fichaEl.cordenadasMatriz=[i[1][0],i[1][1]]
+                self.fichaEl.coor=self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]].coor
+                self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
+                self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]]=self.fichaEl
+                self.fichasPuestas.append(self.fichaEl)
+                screen.blit(self.fichaEl.image,self.fichaEl.coor)
+                self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
+            self.dibujarFichasDisponibles()
 
-            
-
-            self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
-
-
-        self.dibujarFichasDisponibles()
-
-            
-        
     def cambiarTurno(self):
         self.fichaEl=0
         if(self.turno==3):
@@ -152,7 +140,8 @@ class Tablero:
         else:
             self.turno+=1
         if self.turno-1>0:
-            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), self.Grafo.getMatriz()))
+            matriz=self.Grafo.getMatriz()[:]
+            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), matriz))
 
         screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
@@ -164,7 +153,6 @@ class Tablero:
                 self.jugadores[self.turno-1].fichasDisponibles.remove(i)
                 self.jugadores[self.turno-1].fichasDisponibles.append(self.fabricaDeFichas.bolsa.pop())
                 tablero.dibujarFichasDisponibles()
-
 
     def plusPuntuacion(self):            # metodo de prueba para aumentar la puntuacion de los jugadores y que se pueda actualizar
         for player in self.jugadores:
@@ -207,7 +195,7 @@ class Tablero:
                     else:
                         j.cordenadasMatriz=(j.cordenadasMatriz[0]+1,j.cordenadasMatriz[1])       
      
-#calcula  si tiene que correr las fichas hacia algun lado
+    #calcula  si tiene que correr las fichas hacia algun lado
     def calcular(self):
         for i in self.matrizCasillas:
             if (i[0].estado!=0):
@@ -243,13 +231,8 @@ class Tablero:
                             self.fichasPuestas.append(self.fichaEl)
                             screen.blit(self.fichaEl.image,self.fichaEl.coor)
                             self.fichaEl=0
-        '''for i in self.matrizCasillas:
-            for j in i:
-                print(str(j.cordenadasMatriz)+"-"+str(j.estado))
-            print()'''
                     
     def verClick(self,x,y):
-        print(x,y)
         if(x>730):
             if (((x>1100) & (x<=1180)) & ((y>400) & (y<=480))):
                 self.cambiarTurno()
