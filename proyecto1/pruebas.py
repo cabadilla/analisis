@@ -36,16 +36,16 @@ def BacktrackingFigura(NodoMatriz, CombiFigura, N, Solucion):
 		return SolucionFinal
 	else:
 		if NodoMatriz.getIzquierda()==None:
-			Solucion=CalculaMovimientos()
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiFigura[N], 0, "Izquierda")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getDerecha()==None:
-			Solucion=CalculaMovimientos()
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiFigura[N], 0, "Derecha")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getArriba()==None:
-			Solucion=CalculaMovimientos()
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiFigura[N], 0, "Arriba")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getAbajo()==None:
-			Solucion=CalculaMovimientos()
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiFigura[N], 0, "Abajo")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		BacktrackingFigura(NodoMatriz, CombiFigura, N+1, SolucionFinal)
 
@@ -60,16 +60,16 @@ def BacktrackingColor(NodoMatriz, CombiColor, N, Solucion):
 		return SolucionFinal
 	else:
 		if NodoMatriz.getIzquierda()==None: #Si se puede poner una ficha al a izquierda, busca las soluciones de ese movimiento
-			Solucion=CalculaMovimientos(NodoMatriz, CombiColor[N], 0, "Izquierda")
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiColor[N], 0, "Izquierda")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getDerecha()==None: #Si se puede poner una ficha al a derecha, busca las soluciones de ese movimiento
-			Solucion=CalculaMovimientos(NodoMatriz, CombiColor[N], 0, "Derecha")
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiColor[N], 0, "Derecha")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getArriba()==None: #Si se puede poner una ficha arriba, busca las soluciones de ese movimiento
-			Solucion=CalculaMovimientos(NodoMatriz, CombiColor[N], 0, "Arriba")
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiColor[N], 0, "Arriba")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		if NodoMatriz.getAbajo()==None: #Si se puede poner una ficha abajo, busca las soluciones de ese movimiento
-			Solucion=CalculaMovimientos(NodoMatriz, CombiColor[N], 0, "Abajo")
+			Solucion=CalculaMovimientos(NodoMatriz, Matriz, CombiColor[N], 0, "Abajo")
 			SolucionFinal=ComparaLongitudes(Solucion, SolucionFinal)
 		BacktrackingColor(NodoMatriz, CombiFigura, N+1, SolucionFinal)
 	
@@ -83,25 +83,25 @@ def CalculaMovimientos(NodoMatriz, Matriz, Combinacion, N, Direccion):
 		rotate(Combinacion)
 	if validaJugada(NodoMatriz, Combinacion[N]):
 		if Direccion=="Izquierda":
-			Matriz[fila][columna-1]=Combinacion[N]
-			Abajo() #saco el puntaje de hacia abajo
-			Izquierda() #saco el puntaje de hacia la izquierda
-			Derecha() #saco el puntaje de hacia arriba
+			Matriz[NodoMatriz.getFila()][NodoMatriz.getColumna()-1]=Combinacion[N]
+			Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N+1) #saco el puntaje de hacia abajo
+			Izquierda(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N+1) #saco el puntaje de hacia la izquierda
+			Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N+1) #saco el puntaje de hacia arriba
 		elif Direccion=="Derecha":
 			Matriz[fila][columna+1]=Combinacion[N] #coloco el pivote
-			Abajo() #saco el puntaje de hacia abajo
-			Derecha() #saco el puntaje de hacia la derecha
-			Arriba() #saco el puntaje de hacia arriba
+			Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N+1) #saco el puntaje de hacia abajo
+			Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N+1) #saco el puntaje de hacia la derecha
+			Arriba(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N+1) #saco el puntaje de hacia arriba
 		elif Direccion=="Arriba":
 			Matriz[fila-1][columna]=Combinacion[N] #coloco el pivote
-			Izquierda() #saco el puntaje de hacia la izquierda
-			Arriba() #saco el puntaje de hacia arriba
-			Derecha() #saco el puntaje de hacia la derecha
+			Izquierda(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia la izquierda
+			Arriba(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia arriba
+			Derecha(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia la derecha
 		else:
 			Matriz[fila+1][columna]=Combinacion[N] #coloco el pivote
-			Izquierda() #saco el puntaje de hacia la izquierda
-			Abajo() #saco el puntaje de hacia abajo
-			Derecha() #saco el puntaje de hacia la derecha
+			Izquierda(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia la izquierda
+			Abajo(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia abajo
+			Derecha(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N+1) #saco el puntaje de hacia la derecha
 	return SolucionFinal
 
 def Izquierda(Matriz, fila, columna, Combinacion, N):
@@ -110,6 +110,7 @@ def Izquierda(Matriz, fila, columna, Combinacion, N):
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	columna-=1
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Matriz[fila][columna]=Combinacion[i]
@@ -118,12 +119,13 @@ def Izquierda(Matriz, fila, columna, Combinacion, N):
 		columna-=1
 	return None #retorna la puntuacion
 
-def Derecha():
+def Derecha(Matriz, fila, columna, Combinacion, N):
 	'''
 	Objetivo: Coloca todas las fichas en direccion de derecha para calcular el puntaje al hacer esto
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	columna+=1
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Matriz[fila][columna]=Combinacion[i]
@@ -132,12 +134,13 @@ def Derecha():
 		columna+=1
 	return None #retonra la puntuacion
 
-def Arriba():
+def Arriba(Matriz, fila, columna, Combinacion, N):
 	'''
 	Objetivo: Coloca todas las fichas en direccion arriba para calcular el puntaje al hacer esto
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	fila-=1
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Matriz[fila][columna]=Combinacion[i]
@@ -146,12 +149,13 @@ def Arriba():
 		fila-=1
 	return None #retorna la puntuacion
 
-def Abajo():
+def Abajo(Matriz, fila, columna, Combinacion, N):
 	'''
 	Objetivo: Coloca todas las fichas en direccion abajo para calcular el puntaje al hacer esto
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	fila+=1
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Matriz[fila][columna]=Combinacion[i]
