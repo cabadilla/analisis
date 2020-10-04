@@ -20,7 +20,9 @@ class Player:
 			return self.algoritmo1(Nodos, Matriz)
 
 	def algoritmo1(self, Nodos, Matriz):
-		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, Matriz)
+		CopiaMatriz=Matriz[:]
+		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, CopiaMatriz)
+		print(Soluciones)
 		return Soluciones
 	
 	def algoritmo2(self):
