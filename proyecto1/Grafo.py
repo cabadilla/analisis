@@ -48,7 +48,7 @@ class Grafo():
 		for i in range(0, len(fichasPuestas)-1):
 			self.nodos[i].setFila(fichasPuestas[i].cordenadasMatriz[0]) #cambio la fila de los nodos, comparadas a las del tablero			
 			self.nodos[i].setColumna(fichasPuestas[i].cordenadasMatriz[1]) #cambio la columna de los nodos, comparadas a las del tablero
-			i+=1
+			
 
 		for nodo in self.nodos:
 			newMatriz[nodo.fila][nodo.columna]=nodo #vuelve a colocar los nodos dentro de la nueva matriz
