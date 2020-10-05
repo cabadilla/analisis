@@ -45,14 +45,12 @@ class Grafo():
 			newMatriz.append([]) #se agregan la misma cantidad de filas que hay en el tablero
 			for columna in range(0,columnas):
 				newMatriz[fila].append(None) #se agregan la misma cantidad de columnas que hay en el tablero
-		i=0
-		for ficha in fichasPuestas:
-			self.nodos[i].setFila(ficha.cordenadasMatriz[0]) #cambio la fila de los nodos, comparadas a las del tablero			
-			self.nodos[i].setColumna(ficha.cordenadasMatriz[0]) #cambio la columna de los nodos, comparadas a las del tablero
+		for i in range(0, len(fichasPuestas)-1):
+			self.nodos[i].setFila(fichasPuestas[i].cordenadasMatriz[0]) #cambio la fila de los nodos, comparadas a las del tablero			
+			self.nodos[i].setColumna(fichasPuestas[i].cordenadasMatriz[1]) #cambio la columna de los nodos, comparadas a las del tablero
 			i+=1
 
 		for nodo in self.nodos:
 			newMatriz[nodo.fila][nodo.columna]=nodo #vuelve a colocar los nodos dentro de la nueva matriz
 
 		self.setMatriz(newMatriz) #vuelve a setear la nueva matriz
-
