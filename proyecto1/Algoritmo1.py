@@ -8,16 +8,18 @@ def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matr
 	if N>len(Nodos)-1:
 		return MejorSolucion #Si ya se recorrieron todos los nodos del Grafo, se retorna la mejor solucion que se encontro
 	else:
-		SolucionPrincipal=solucionesCasilla(Nodos[N], FichasMano, [], Matriz) #Saca la mejor solucion del nodo actual
+		SolucionPrincipal=solucionesCasilla(Nodos[N], FichasMano, Matriz) #Saca la mejor solucion del nodo actual
 		MejorSolucion=ComparaLongitudes(SolucionPrincipal, MejorSolucion)
 		return [] + buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz) #Si no es mejor, se cambia de nodo y se continua
 
-def solucionesCasilla(NodoMatriz, FichasMano, SolucionFinal, Matriz):
+def solucionesCasilla(NodoMatriz, FichasMano, Matriz):
 	'''
 	Objetivo: Busca la mejor solucion que tenga el nodo que esta siendo evaluado
 	Recibe: NodoMatriz (El nodo de la matriz que esta siendo evaluado), FichasMano (Fichas que tenga el algoritmo disponibles), SolucionActual (La solucion que se cree con cada corrida), SolucionFinal (Solucion que se retornara)
 	Retorna: Una lista con la mejor solucion que tenga este nodo
 	'''
+	SolucionFigura=[]
+	SolucionColor=[]
 	if BuscaJugada(NodoMatriz, FichasMano):
 		CombiFigura=CombinacionesFigura(FichasMano, 0)
 		CombiColor=CombinacionesColor(FichasMano, 0)
@@ -180,17 +182,32 @@ def valido(Matriz, Ficha, fila, columna):
 	Recibe: Matriz(prueba para simular los movimientos), Posicion(donde se van a ir colocando las fichas), Ficha(Ficha que se va a colocar), Direccion(Direccion en la que solo se pueden colocar fichas)
 	Retorna: True si la jugada se puede y False si es invalida
 	'''
-	JugadaValida=True
 	try: #Revisa en las 4 direcciones que no haya una ficha que invalide el movimiento
 		if Matriz[fila][columna+1]!=None:
-			JugadaValida=validaJugada(Ficha, Matriz[fila][columna+1]) #Si hay un nodo o alguna ficha, valida que se pueda poner
+			c=columna
+			while Matriz[fila][c+1]!=None:
+				if not validaJugada(Ficha, Matriz[fila][c+1]): #Si hay un nodo o alguna ficha, valida que se pueda poner
+					return False
+				c+=1
 		if Matriz[fila][columna-1]!=None:
-			JugadaValida=validaJugada(Ficha, Matriz[fila][columna-1]) #Si hay un nodo o alguna ficha, valida que se pueda poner
+			c=columna
+			while (Matriz[fila][c-1]!=None):
+				if not validaJugada(Ficha, Matriz[fila][c-1]): #Si hay un nodo o alguna ficha, valida que se pueda poner
+					return False
+				c-=1
 		if Matriz[fila-1][columna]!=None:
-			JugadaValida=validaJugada(Ficha, Matriz[fila-1][columna]) #Si hay un nodo o alguna ficha, valida que se pueda poner
+			f=fila
+			while (Matriz[f-1][columna]!=None):
+				if not validaJugada(Ficha, Matriz[f-1][columna]): #Si hay un nodo o alguna ficha, valida que se pueda poner
+					return False
+				f-=1
 		if Matriz[fila+1][columna]!=None:
-			JugadaValida=validaJugada(Ficha, Matriz[fila+1][columna]) #Si hay un nodo o alguna ficha, valida que se pueda poner
-		return JugadaValida
+			f=fila
+			while (Matriz[f+1][columna]!=None):
+				if not validaJugada(Ficha, Matriz[f+1][columna]): #Si hay un nodo o alguna ficha, valida que se pueda poner
+					return False
+				f+=1
+		return True
 	except (IndexError):
 		pass #En caso de un error de index por espacio de la matriz, se omite porque la matriz puede crecer
 	
@@ -247,7 +264,7 @@ def ComparaLongitudes(Lista1, Lista2):
 	Recibe: Dos listas
 	Retorna: La lista de mayor tamagno
 	'''
-	return Lista1 if (len(Lista1)>=len(Lista2)) else Lista2	
+	return Lista1 if (len(Lista1)>=len(Lista2)) else Lista2
 
 #------------------------------------------------------------Funciones de Validacion-------------------------------------------------------------
 def validaFigura(Nodo, Ficha):

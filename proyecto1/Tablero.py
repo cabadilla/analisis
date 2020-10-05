@@ -140,8 +140,10 @@ class Tablero:
         else:
             self.turno+=1
         if self.turno-1>0:
-            matriz=self.Grafo.getMatriz()[:]
-            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), matriz))
+            matriz=self.Grafo.getMatriz()
+            for i in matriz:
+                print(i)
+            self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), matriz[:]))
 
         screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
