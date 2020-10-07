@@ -122,15 +122,16 @@ class Tablero:
     def dibujarJugada(self,jugada):
         if jugada!=None:
             for i in jugada:
-                self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
-                self.Grafo.insertar(i[1][0], i[1][1], self.fichaEl)
-                self.fichaEl.cordenadasMatriz=[i[1][0],i[1][1]]
-                self.fichaEl.coor=self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]].coor
-                self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
-                self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]]=self.fichaEl
-                self.fichasPuestas.append(self.fichaEl)
-                screen.blit(self.fichaEl.image,self.fichaEl.coor)
-                self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
+                if not isinstance(i, int):
+                    self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
+                    self.Grafo.insertar(i[1][0], i[1][1], self.fichaEl)
+                    self.fichaEl.cordenadasMatriz=[i[1][0],i[1][1]]
+                    self.fichaEl.coor=self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]].coor
+                    self.fichaEl.cambiarEscala((self.pixeles,self.pixeles))
+                    self.matrizCasillas[self.fichaEl.cordenadasMatriz[0]][self.fichaEl.cordenadasMatriz[1]]=self.fichaEl
+                    self.fichasPuestas.append(self.fichaEl)
+                    screen.blit(self.fichaEl.image,self.fichaEl.coor)
+                    self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
             self.dibujarFichasDisponibles()
 
     def cambiarTurno(self):

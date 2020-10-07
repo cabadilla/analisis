@@ -36,7 +36,9 @@ def BacktrackingFigura(NodoMatriz, CombiFigura, N, Solucion, Matriz, SolucionFin
 	if N>5:
 		Lista=[]
 		for FichaSolucion in SolucionFinal:
-			Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
+			if not isinstance(FichaSolucion, int):
+				Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
+		Lista.append(SolucionFinal[-1])
 		return Lista
 	else:
 		if NodoMatriz.getIzquierda()==None:
@@ -63,7 +65,9 @@ def BacktrackingColor(NodoMatriz, CombiColor, N, Solucion, Matriz, SolucionFinal
 	if N>5:
 		Lista=[]
 		for FichaSolucion in SolucionFinal:
-			Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
+			if not isinstance(FichaSolucion, int):
+				Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
+		Lista.append(SolucionFinal[-1])
 		return Lista
 	else:
 		if NodoMatriz.getIzquierda()==None: #Si se puede poner una ficha al a izquierda, busca las soluciones de ese movimiento
@@ -110,12 +114,15 @@ def Izquierda(Matriz, fila, columna, Combinacion, N):
 	Retorna: Puntuacion que genera este movimiento
 	'''
 	Solucion=[]
+	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
+			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
 			break
 		columna-=1
+	Solucion.append(puntuacion)
 	return Solucion
 
 def Derecha(Matriz, fila, columna, Combinacion, N):
@@ -125,12 +132,14 @@ def Derecha(Matriz, fila, columna, Combinacion, N):
 	Retorna: Puntuacion que genera este movimiento
 	'''
 	Solucion=[]
+	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
 		else:
 			break
 		columna+=1
+	Solucion.append(puntuacion)
 	return Solucion
 
 def Arriba(Matriz, fila, columna, Combinacion, N):
@@ -140,12 +149,14 @@ def Arriba(Matriz, fila, columna, Combinacion, N):
 	Retorna: Puntuacion que genera este movimiento
 	'''
 	Solucion=[]
+	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
 		else:
 			break
 		fila-=1
+	Solucion.append(puntuacion)
 	return Solucion
 
 def Abajo(Matriz, fila, columna, Combinacion, N):
@@ -155,12 +166,14 @@ def Abajo(Matriz, fila, columna, Combinacion, N):
 	Retorna: Puntuacion que genera este movimiento
 	'''
 	Solucion=[]
+	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
 		else:
 			break
 		fila+=1
+	Solucion.append(puntuacion)
 	return Solucion
 
 def rotate(Combinacion):
@@ -175,11 +188,44 @@ def rotate(Combinacion):
 	Combinacion[i]= Primero
 	return Combinacion
 
+def BuscaPuntuacion(Matriz, fila, columna):
+	'''
+	Objetivo: Tiene como objetivo contar los puntos que se han realizado en la jugada que se hizo anteriormente
+	Recibe: Matriz(prueba para simular los movimientos), Fila(Donde se coloco la ficha), Columna(Donde se coloco la ficha)
+	Retorna: La puntuacion que realizo 
+	'''
+	puntuacion=0
+	try: #Revisa en las 4 direcciones que no haya una ficha que invalide el movimiento
+		if Matriz[fila][columna+1]!=None:
+			c=columna
+			while Matriz[fila][c+1]!=None:
+				puntuacion+=1
+				c+=1
+		if Matriz[fila][columna-1]!=None:
+			c=columna
+			while (Matriz[fila][c-1]!=None):
+				puntuacion+=1
+				c-=1
+		if Matriz[fila-1][columna]!=None:
+			f=fila
+			while (Matriz[f-1][columna]!=None):
+				puntuacion+=1
+				f-=1
+		if Matriz[fila+1][columna]!=None:
+			f=fila
+			while (Matriz[f+1][columna]!=None):
+				puntuacion+=1
+				f+=1
+		return puntuacion
+	except (IndexError):
+		pass #En caso de un error de index por espacio de la matriz, se omite porque la matriz puede crecer
+
+
 def valido(Matriz, Ficha, fila, columna):
 	'''
 	Objetivo: Valida y verifica que la ficha que en este momento se vaya a colocar se pueda colocar
 	y en caso de que se pueda colocar retorna True
-	Recibe: Matriz(prueba para simular los movimientos), Posicion(donde se van a ir colocando las fichas), Ficha(Ficha que se va a colocar), Direccion(Direccion en la que solo se pueden colocar fichas)
+	Recibe: Matriz(prueba para simular los movimientos), Ficha(que se va a colocar en la matriz), Fila(donde se va a colocar la ficha), Columna(donde se va a colocar la ficha)
 	Retorna: True si la jugada se puede y False si es invalida
 	'''
 	try: #Revisa en las 4 direcciones que no haya una ficha que invalide el movimiento
