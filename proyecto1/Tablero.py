@@ -114,13 +114,22 @@ class Tablero:
         NormalFont=pygame.font.SysFont("monospace", 18)
         screen.blit(NormalFont.render(Hplayer.nombre+": "+str(Hplayer.puntuacion), 1, Hplayer.color), (650, 22))
         screen.blit(NormalFont.render(A1player.nombre+": "+str(A1player.puntuacion), 1, A1player.color), (650, 112))
-        screen.blit(NormalFont.render(A2player.nombre+": "+str(A2player.puntuacion), 1, A2player.color), (650, 212))
+        screen.blit(NormalFont.render(A2player.nombre+": "+str(A2player.puntuacion), 1, A2player.color), (650, 202))
         self.jugadores.append(Hplayer)
         self.jugadores.append(A1player)
         self.jugadores.append(A2player)
 
+    def updateJugadores(self):           #metodo que actualiza los labels de cada jugador
+        i=22
+        NormalFont=pygame.font.SysFont("monospace", 18)
+        for player in self.jugadores:
+            screen.fill(pygame.Color(255,255,255), (650, i, 200, 20))
+            screen.blit(NormalFont.render(player.nombre+": "+str(player.puntuacion), 1, player.color), (650,i))
+            i+=90
+
     def dibujarJugada(self,jugada):
         if jugada!=None:
+            self.jugadores[self.turno-1].aumentaPuntuacion(jugada[len(jugada)-1])
             for i in jugada:
                 if not isinstance(i, int):
                     self.fichaEl=self.jugadores[self.turno-1].fichasDisponibles[i[0]]
@@ -133,6 +142,7 @@ class Tablero:
                     screen.blit(self.fichaEl.image,self.fichaEl.coor)
                     self.jugadores[self.turno-1].fichasDisponibles[i[0]]=self.fabricaDeFichas.bolsa.pop()
             self.dibujarFichasDisponibles()
+            self.updateJugadores()
 
     def cambiarTurno(self):
         self.fichaEl=0
@@ -155,17 +165,6 @@ class Tablero:
                 self.jugadores[self.turno-1].fichasDisponibles.append(self.fabricaDeFichas.bolsa.pop())
                 tablero.dibujarFichasDisponibles()
 
-    def plusPuntuacion(self):            # metodo de prueba para aumentar la puntuacion de los jugadores y que se pueda actualizar
-        for player in self.jugadores:
-            player.aumentaPuntuacion(1)
-
-    def updateJugadores(self):           #metodo que actualiza los labels de cada jugador
-        i=22
-        screen.fill(pygame.Color(255,255,255), (550, 400, 50,50)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
-        NormalFont=pygame.font.SysFont("Times New Roman", 22)
-        for player in self.jugadores:
-            screen.blit(NormalFont.render(player.nombre+": "+str(player.puntuacion), 1, player.color), (620, i))
-            i+=120
 
     def dibujarFichasDisponibles(self):
         #pone dentro del rectangulo las fichas que tienen los jugadores
@@ -232,6 +231,7 @@ class Tablero:
                             self.fichasPuestas.append(self.fichaEl)
                             screen.blit(self.fichaEl.image,self.fichaEl.coor)
                             self.fichaEl=0
+                            self.jugadores[self.turno-1].aumentaPuntuacion(1)
                     
     def verClick(self,x,y):
         if(x>730):
@@ -268,6 +268,10 @@ while True:
 
     if tablero.calcular():
         tablero.agrandarTablero()
+
+    if len(tablero.fabricaDeFichas.bolsa)-1==0:
+        print("ya no hay fichas")
+        break
 
 
     for event in pygame.event.get():
