@@ -21,9 +21,9 @@ class Player:
 
 	def algoritmo1(self, Nodos, Matriz):
 		CopiaMatriz=Matriz[:]
-		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, CopiaMatriz)
+		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, CopiaMatriz, [])
 		print(Soluciones)
-		return Soluciones
+		return Soluciones[0]
 	
 	def algoritmo2(self):
 		print("fddg")

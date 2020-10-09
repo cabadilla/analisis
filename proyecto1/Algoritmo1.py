@@ -1,4 +1,4 @@
-def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matriz):
+def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matriz, ListaAlgoritmo2):
 	'''
 	Objetivo: Busca en forma de un algoritmo de Backtracking la mejor solucion que se pueda aplicar dentro del
 	tablero de juego, esto para que el algoritmo pueda jugar contra el Jugador
@@ -6,11 +6,12 @@ def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matr
 	Retorna: La mejor Solucion que pueda realizar el algoritmo para llevar a cabo
 	'''
 	if N>len(Nodos)-1:
-		return MejorSolucion #Si ya se recorrieron todos los nodos del Grafo, se retorna la mejor solucion que se encontro
+		return [MejorSolucion, ListaAlgoritmo2] #Si ya se recorrieron todos los nodos del Grafo, se retorna la mejor solucion que se encontro
 	else:
 		SolucionPrincipal=solucionesCasilla(Nodos[N], FichasMano, Matriz) #Saca la mejor solucion del nodo actual
+		ListaAlgoritmo2.append(SolucionPrincipal)
 		MejorSolucion=ComparaLongitudes(SolucionPrincipal, MejorSolucion)
-		return [] + buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz) #Si no es mejor, se cambia de nodo y se continua
+		return [] + buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz, ListaAlgoritmo2) #Si no es mejor, se cambia de nodo y se continua
 
 def solucionesCasilla(NodoMatriz, FichasMano, Matriz):
 	'''
@@ -33,7 +34,7 @@ def BacktrackingFigura(NodoMatriz, CombiFigura, N, Solucion, Matriz, SolucionFin
 	Recibe: Posicion (x,y de la forma fila, columna de la casilla donde se va a jugar), FichasMano(Fichas disponibles que hay para jugar), Direccion(Direccion en la que tiene que ir el algoritmo), Solucion(Solucion que se va a obtener), n(Numero para indexar las fichas)
 	Retorna: La mejor solucion que haya creado para esa posicion
 	'''
-	if N>5:
+	if N>len(FichasMano)-1:
 		Lista=[]
 		for FichaSolucion in SolucionFinal:
 			if not isinstance(FichaSolucion, int):
@@ -62,7 +63,7 @@ def BacktrackingColor(NodoMatriz, CombiColor, N, Solucion, Matriz, SolucionFinal
 	Recibe: Posicion (x,y de la forma fila, columna de la casilla donde se va a jugar), FichasMano(Fichas disponibles que hay para jugar), Direccion(Direccion en la que tiene que ir el algoritmo), Solucion(Solucion que se va a obtener), n(Numero para indexar las fichas)
 	Retorna: La mejor solucion que haya creado para esa posicion
 	'''
-	if N>5:
+	if N>len(FichasMano)-1:
 		Lista=[]
 		for FichaSolucion in SolucionFinal:
 			if not isinstance(FichaSolucion, int):
@@ -136,6 +137,7 @@ def Derecha(Matriz, fila, columna, Combinacion, N):
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
+			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
 			break
 		columna+=1
@@ -153,6 +155,7 @@ def Arriba(Matriz, fila, columna, Combinacion, N):
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
+			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
 			break
 		fila-=1
@@ -170,6 +173,7 @@ def Abajo(Matriz, fila, columna, Combinacion, N):
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
 			Solucion.append((Combinacion[i], (fila, columna)))
+			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
 			break
 		fila+=1
@@ -194,7 +198,7 @@ def BuscaPuntuacion(Matriz, fila, columna):
 	Recibe: Matriz(prueba para simular los movimientos), Fila(Donde se coloco la ficha), Columna(Donde se coloco la ficha)
 	Retorna: La puntuacion que realizo 
 	'''
-	puntuacion=0
+	puntuacion=1
 	try: #Revisa en las 4 direcciones que no haya una ficha que invalide el movimiento
 		if Matriz[fila][columna+1]!=None:
 			c=columna
@@ -264,7 +268,7 @@ def CombinacionesFigura(ListaFichas, N):
 	Recibe: Fichas que tenga en la mano y un numero para poder iterar
 	Retorna: La lista de las combinaciones
 	'''
-	if N>5:
+	if N>len(ListaFichas)-1:
 		return []
 	else:
 		Lista=[]
@@ -280,7 +284,7 @@ def CombinacionesColor(ListaFichas, N):
 	Recibe: Fichas que tenga en la mano y un numero para poder iterar
 	Retorna: La lista de las combinaciones
 	'''
-	if N>5:
+	if N>len(ListaFichas)-1:
 		return []
 	else:
 		Lista=[]
