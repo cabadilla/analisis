@@ -1,4 +1,5 @@
 from Algoritmo1 import *
+from Algoritmo2 import *
 #Creacion de la clase principal para los personajes o jugadores
 
 class Player:
@@ -17,16 +18,17 @@ class Player:
 		if self.getAlgoritmo()==1:
 			return self.algoritmo1(Nodos, Matriz)
 		else:
-			return self.algoritmo1(Nodos, Matriz)
+			return self.algoritmo2(Nodos, Matriz)
 
 	def algoritmo1(self, Nodos, Matriz):
 		CopiaMatriz=Matriz[:]
 		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, CopiaMatriz, [])
-		print(Soluciones)
 		return Soluciones[0]
 	
-	def algoritmo2(self):
-		print("fddg")
+	def algoritmo2(self, Nodos, Matriz):
+		CopiaMatriz=Matriz[:]
+		Soluciones=buscaSoluciones2(Nodos, self.getFichasDisponibles(), 0, CopiaMatriz, [])
+		return Soluciones
 		
 
 	def getFichasDisponibles(self):

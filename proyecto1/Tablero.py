@@ -128,7 +128,7 @@ class Tablero:
             i+=90
 
     def dibujarJugada(self,jugada):
-        if jugada!=None:
+        if jugada!=[] and jugada!=None:
             self.jugadores[self.turno-1].aumentaPuntuacion(jugada[len(jugada)-1])
             for i in jugada:
                 if not isinstance(i, int):

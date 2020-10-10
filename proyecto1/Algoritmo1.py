@@ -273,7 +273,7 @@ def CombinacionesFigura(ListaFichas, N):
 	else:
 		Lista=[]
 		Lista.append(ListaFichas[N])
-		for i in range(N+1, 6):
+		for i in range(N+1, len(ListaFichas)):
 			if validaFigura(Lista[0], ListaFichas[i]):
 				Lista.append(ListaFichas[i])
 		return [Lista]+CombinacionesFigura(ListaFichas, N+1) #Por medio de recursion de pila realiza todas las posibles combinaciones dentro de las fichas, esto con el fin de realizar las jugadas con la mayor cantidad de fichas
@@ -289,7 +289,7 @@ def CombinacionesColor(ListaFichas, N):
 	else:
 		Lista=[]
 		Lista.append(ListaFichas[N])
-		for i in range(N+1, 6):
+		for i in range(N+1, len(ListaFichas)):
 			if validaColor(Lista[0], ListaFichas[i]):
 				Lista.append(ListaFichas[i])
 		return [Lista]+CombinacionesColor(ListaFichas, N+1)  #Por medio de recursion de pila realiza todas las posibles combinaciones dentro de las fichas, esto con el fin de realizar las jugadas con la mayor cantidad de fichas

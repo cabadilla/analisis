@@ -27,6 +27,7 @@ class Grafo():
 			self.nodos.append(Nodo)
 			self.matriz[fila][columna]=Nodo #coloca el nodo en la posicion donde debe ir
 
+
 	def setMatriz(self, matriz):                                              #setea una nueva matriz
 		self.matriz=matriz
 
