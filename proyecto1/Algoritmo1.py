@@ -9,7 +9,8 @@ def buscaSoluciones(Nodos, FichasMano, SolucionPrincipal, MejorSolucion, N, Matr
 		return [MejorSolucion, ListaAlgoritmo2] #Si ya se recorrieron todos los nodos del Grafo, se retorna la mejor solucion que se encontro
 	else:
 		SolucionPrincipal=solucionesCasilla(Nodos[N], FichasMano, Matriz) #Saca la mejor solucion del nodo actual
-		ListaAlgoritmo2.append(SolucionPrincipal)
+		if(SolucionPrincipal!=[]):
+			ListaAlgoritmo2.append(SolucionPrincipal)
 		MejorSolucion=ComparaLongitudes(SolucionPrincipal, MejorSolucion)
 		return [] + buscaSoluciones(Nodos, FichasMano, [], MejorSolucion, N+1, Matriz, ListaAlgoritmo2) #Si no es mejor, se cambia de nodo y se continua
 

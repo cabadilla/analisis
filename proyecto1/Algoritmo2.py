@@ -3,9 +3,8 @@ from Algoritmo1 import *
 
 def buscaSoluciones2(Nodos, FichasMano, N, Matriz, ListaSoluciones):
 	Soluciones=buscaSoluciones(Nodos, FichasMano, [], [], 0, Matriz, [])
-	print(Soluciones[1])
+	print(Soluciones)
 	ListaSoluciones=sort(Soluciones[1])
-	print(ListaSoluciones)
 	return Algoritmo2(Nodos, FichasMano, 0, Matriz, ListaSoluciones)
 
 
@@ -36,18 +35,17 @@ def sort(lista):
 	izquierda = []
 	centro = []
 	derecha = []
-	try:
-		if len(lista) > 1:
-			pivote = lista[0][-1]
-			for i in lista:
-				if i[-1] > pivote:
-					izquierda.append(i)
-				elif i[-1] == pivote:
-					centro.append(i)
-				elif i[-1] < pivote:
-					derecha.append(i)
-			return sort(izquierda)+centro+sort(derecha)
-		else:
-			return lista
-	except (IndexError):
-		print("a")
+
+	if len(lista) > 1:
+		pivote = lista[0][-1]
+		for i in lista:
+			if i[-1] > pivote:
+				izquierda.append(i)
+			elif i[-1] == pivote:
+				centro.append(i)
+			elif i[-1] < pivote:
+				derecha.append(i)
+		return sort(izquierda)+centro+sort(derecha)
+	else:
+		return lista
+	
