@@ -92,20 +92,21 @@ def CalculaMovimientos(NodoMatriz, Matriz, Combinacion, N, Direccion, SolucionFi
 	Recibe: -
 	Retorna: El movimiento de la mayor puntuacion
 	'''
+	CopiaMatriz=Matriz[:]
 	if validaIgualdad(NodoMatriz, Combinacion[0]) and len(Combinacion)>1:
 		rotate(Combinacion)
 	if validaJugada(NodoMatriz, Combinacion[N]):
 		if Direccion=="Izquierda":
-			ListaSoluciones=sorted([Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Izquierda(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Abajo(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Izquierda(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Derecha(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		elif Direccion=="Derecha":
-			ListaSoluciones=sorted([Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Arriba(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Abajo(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Derecha(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Arriba(CopiaMatriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		elif Direccion=="Arriba":
-			ListaSoluciones=sorted([Izquierda(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Arriba(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Derecha(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Izquierda(CopiaMatriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Arriba(CopiaMatriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Derecha(CopiaMatriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		else:
-			ListaSoluciones=sorted([Izquierda(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Abajo(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Derecha(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Izquierda(CopiaMatriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Abajo(CopiaMatriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Derecha(CopiaMatriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 	return SolucionFinal
 
@@ -115,12 +116,14 @@ def Izquierda(Matriz, fila, columna, Combinacion, N):
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	MemoriaMatriz=Matriz[:]
 	Solucion=[]
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
-		if valido(Matriz, Combinacion[i], fila, columna):
+		if valido(MemoriaMatriz, Combinacion[i], fila, columna):
+			MemoriaMatriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
-			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
+			puntuacion+=BuscaPuntuacion(MemoriaMatriz, fila, columna)
 		else:
 			break
 		columna-=1
@@ -133,12 +136,14 @@ def Derecha(Matriz, fila, columna, Combinacion, N):
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	MemoriaMatriz=Matriz[:]
 	Solucion=[]
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
-		if valido(Matriz, Combinacion[i], fila, columna):
+		if valido(MemoriaMatriz, Combinacion[i], fila, columna):
+			MemoriaMatriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
-			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
+			puntuacion+=BuscaPuntuacion(MemoriaMatriz, fila, columna)
 		else:
 			break
 		columna+=1
@@ -151,12 +156,14 @@ def Arriba(Matriz, fila, columna, Combinacion, N):
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	MemoriaMatriz=Matriz[:]
 	Solucion=[]
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
-		if valido(Matriz, Combinacion[i], fila, columna):
+		if valido(MemoriaMatriz, Combinacion[i], fila, columna):
+			MemoriaMatriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
-			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
+			puntuacion+=BuscaPuntuacion(MemoriaMatriz, fila, columna)
 		else:
 			break
 		fila-=1
@@ -169,12 +176,14 @@ def Abajo(Matriz, fila, columna, Combinacion, N):
 	Recibe: Matriz para realizar las pruebas, fila donde se va a insertar, columna donde se va a insertar, Combinacion actual, N para indexar
 	Retorna: Puntuacion que genera este movimiento
 	'''
+	MemoriaMatriz=Matriz[:]
 	Solucion=[]
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
-		if valido(Matriz, Combinacion[i], fila, columna):
+		if valido(MemoriaMatriz, Combinacion[i], fila, columna):
+			MemoriaMatriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
-			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
+			puntuacion+=BuscaPuntuacion(MemoriaMatriz, fila, columna)
 		else:
 			break
 		fila+=1
