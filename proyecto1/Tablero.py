@@ -54,8 +54,6 @@ class Tablero:
          
         rect = (0, 0, 600,800)
         screen.fill(pygame.Color(255,255,255), rect)
-        #pygame.draw.rect(screen, BLANCO, rect,0)
-        #pygame.display.flip()
 
         for i in range(0,self.colFil):
             arreglo=[]

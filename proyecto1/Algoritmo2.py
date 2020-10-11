@@ -3,7 +3,6 @@ from Algoritmo1 import *
 
 def buscaSoluciones2(Nodos, FichasMano, N, Matriz, ListaSoluciones):
 	Soluciones=buscaSoluciones(Nodos, FichasMano, [], [], 0, Matriz, [])
-	print(Soluciones)
 	ListaSoluciones=sort(Soluciones[1])
 	return Algoritmo2(Nodos, FichasMano, 0, Matriz, ListaSoluciones)
 
