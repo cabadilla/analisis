@@ -73,8 +73,7 @@ class Tablero:
             self.matrizCasillas[i.cordenadasMatriz[0]][i.cordenadasMatriz[1]]=i
             screen.blit(i.image,i.coor)
             pygame.display.flip()
-
-        self.Grafo.mueveNodos(self.fichasPuestas, self.colFil, self.colFil)
+            self.Grafo.mueveNodos(self.fichasPuestas, self.colFil, self.colFil)
 
     def crearBoton(self):
         boton=pygame.image.load("imagenes/boton.png")
@@ -151,8 +150,6 @@ class Tablero:
         if self.turno-1>0:
             matriz=self.Grafo.getMatriz()[:]
             self.dibujarJugada(self.jugadores[self.turno-1].jugarSolo(self.Grafo.getNodos(), matriz[:]))
-            for i in self.Grafo.getMatriz():
-                print(i)
 
         screen.fill(pygame.Color(255,255,255), (800,450,200,100)) # elimina todo lo que tenga en esas cordenadas para poder reemplazar el label
         NormalFont=pygame.font.SysFont("Times New Roman", 22)
@@ -189,6 +186,10 @@ class Tablero:
     def moverFichas(self,x):
         for i in self.matrizCasillas:
             for j in i:
+                while j.cordenadasMatriz[1]<0:
+                    j.cordenadasMatriz=(j.cordenadasMatriz[0],j.cordenadasMatriz[1]+1)
+                while j.cordenadasMatriz[0]<0:
+                    j.cordenadasMatriz=(j.cordenadasMatriz[0]+1,j.cordenadasMatriz[1])
                 if j.estado!=0:
                     if x==1:
                         j.cordenadasMatriz=(j.cordenadasMatriz[0],j.cordenadasMatriz[1]+1)

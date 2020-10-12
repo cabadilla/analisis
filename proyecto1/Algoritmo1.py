@@ -96,16 +96,16 @@ def CalculaMovimientos(NodoMatriz, Matriz, Combinacion, N, Direccion, SolucionFi
 		rotate(Combinacion)
 	if validaJugada(NodoMatriz, Combinacion[N]):
 		if Direccion=="Izquierda":
-			ListaSoluciones=sorted([Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Izquierda(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Abajo(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Izquierda(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N), Derecha(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()-1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		elif Direccion=="Derecha":
-			ListaSoluciones=sorted([Abajo(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Derecha(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Arriba(Matriz, NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Abajo(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Derecha(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N), Arriba(creaMatriz(Matriz), NodoMatriz.getFila(), NodoMatriz.getColumna()+1, Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		elif Direccion=="Arriba":
-			ListaSoluciones=sorted([Izquierda(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Arriba(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Derecha(Matriz, NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Izquierda(creaMatriz(Matriz), NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Arriba(creaMatriz(Matriz), NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N), Derecha(creaMatriz(Matriz), NodoMatriz.getFila()-1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 		else:
-			ListaSoluciones=sorted([Izquierda(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Abajo(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Derecha(Matriz, NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
+			ListaSoluciones=sorted([Izquierda(creaMatriz(Matriz), NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Abajo(creaMatriz(Matriz), NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N), Derecha(creaMatriz(Matriz), NodoMatriz.getFila()+1, NodoMatriz.getColumna(), Combinacion, N)], key=len, reverse=True) #Lista para las soluciones y buscar cual es la mejor de todas
 			SolucionFinal=ListaSoluciones[0]
 	return SolucionFinal
 
@@ -119,6 +119,7 @@ def Izquierda(Matriz, fila, columna, Combinacion, N):
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
+			Matriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
 			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
@@ -137,6 +138,7 @@ def Derecha(Matriz, fila, columna, Combinacion, N):
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
+			Matriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
 			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
@@ -155,6 +157,7 @@ def Arriba(Matriz, fila, columna, Combinacion, N):
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
+			Matriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
 			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
@@ -173,6 +176,7 @@ def Abajo(Matriz, fila, columna, Combinacion, N):
 	puntuacion=0
 	for i in range(N, len(Combinacion)):
 		if valido(Matriz, Combinacion[i], fila, columna):
+			Matriz[fila][columna]=Combinacion[i]
 			Solucion.append((Combinacion[i], (fila, columna)))
 			puntuacion+=BuscaPuntuacion(Matriz, fila, columna)
 		else:
@@ -316,6 +320,20 @@ def ComparaLongitudes(Lista1, Lista2):
 	Retorna: La lista de mayor tamagno
 	'''
 	return Lista1 if (len(Lista1)>=len(Lista2)) else Lista2
+
+def creaMatriz(Matriz):
+	'''
+	Objetivo: Crea una matriz para evitar un alias que estaba sucediendo con la matriz del grafo
+	Recibe: La matriz
+	Retorna: La matriz de la misma dimension y con los grafos dentro
+	'''
+	newMatriz=[]
+	for i in Matriz:
+		fila=[]
+		for j in i:
+			fila.append(j)
+		newMatriz.append(fila)
+	return newMatriz
 
 #------------------------------------------------------------Funciones de Validacion-------------------------------------------------------------
 def validaFigura(Nodo, Ficha):
