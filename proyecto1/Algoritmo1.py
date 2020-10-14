@@ -94,7 +94,7 @@ def CalculaMovimientos(NodoMatriz, Matriz, Combinacion, N, Direccion, SolucionFi
 	Recibe: -
 	Retorna: El movimiento de la mayor puntuacion
 	'''
-	if validaIgualdad(NodoMatriz, Combinacion[0]) and len(Combinacion)>1:
+	if not validaIgualdad(NodoMatriz, Combinacion[0]) and len(Combinacion)>1:
 		rotate(Combinacion)
 	if validaJugada(NodoMatriz, Combinacion[N]):
 		if Direccion=="Izquierda":
