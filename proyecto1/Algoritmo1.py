@@ -40,7 +40,8 @@ def BacktrackingFigura(NodoMatriz, CombiFigura, N, Solucion, Matriz, SolucionFin
 		for FichaSolucion in SolucionFinal:
 			if not isinstance(FichaSolucion, int):
 				Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
-		Lista.append(SolucionFinal[-1])
+		if SolucionFinal!=[]:
+			Lista.append(SolucionFinal[-1])
 		return Lista
 	else:
 		if NodoMatriz.getIzquierda()==None:
@@ -69,7 +70,8 @@ def BacktrackingColor(NodoMatriz, CombiColor, N, Solucion, Matriz, SolucionFinal
 		for FichaSolucion in SolucionFinal:
 			if not isinstance(FichaSolucion, int):
 				Lista.append([FichasMano.index(FichaSolucion[0]), FichaSolucion[1]])
-		Lista.append(SolucionFinal[-1])
+		if SolucionFinal!=[]:
+			Lista.append(SolucionFinal[-1])
 		return Lista
 	else:
 		if NodoMatriz.getIzquierda()==None: #Si se puede poner una ficha al a izquierda, busca las soluciones de ese movimiento

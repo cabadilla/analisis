@@ -1,5 +1,6 @@
 from Algoritmo1 import *
 from Algoritmo2 import *
+from time import time
 #Creacion de la clase principal para los personajes o jugadores
 
 class Player:
@@ -22,12 +23,19 @@ class Player:
 
 	def algoritmo1(self, Nodos, Matriz):
 		CopiaMatriz=Matriz[:]
+		#tiempo_inicial=time()
 		Soluciones=buscaSoluciones(Nodos, self.getFichasDisponibles(), [], [], 0, CopiaMatriz, [])
+		#tiempoFinal=time()
+		#tiempoEjecucion = time() - tiempo_inicial
+		#print("Algoritmo 1 tiempo: "+str(tiempoEjecucion))
 		return Soluciones[0]
 	
 	def algoritmo2(self, Nodos, Matriz):
 		CopiaMatriz=Matriz[:]
+		#tiempo_inicial=time()
 		Soluciones=buscaSoluciones2(Nodos, self.getFichasDisponibles(), 0, CopiaMatriz, [])
+		#tiempoEjecucion = time() - tiempo_inicial
+		#print("Algoritmo 2 tiempo: "+str(tiempoEjecucion))
 		return Soluciones
 		
 
