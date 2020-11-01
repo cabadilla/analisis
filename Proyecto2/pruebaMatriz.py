@@ -1,5 +1,21 @@
 from random import *
 import threading
+import sys, pygame
+from pygame.locals import *
+
+pygame.init()
+
+#definiendo colores
+NEGRO=[0,0,0]
+BLANCO=[255,255,255]
+
+#tamano ventana
+size = (500,500)
+global screen
+
+
+screen=pygame.display.set_mode(size)
+screen.fill(BLANCO)
 
 sonar=[]
 Matriz=[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -206,7 +222,7 @@ def crearRayos(sonar, listaRayos):
 		else:
 			i-=1
 
-def lanzarRayos(listaRayos, n):
+def lanzarRayos(listaRayos):
 	for rayo in listaRayos:
 		n=randint(1,3)
 		listapeque=[]
@@ -228,16 +244,19 @@ def lanzarRayos(listaRayos, n):
 				hilo.start()
 
 
-
-
-
-
-
 listaRayos=[]
-
 creaCono(Matriz, (5,1), 3, sonar)
 crearRayos(sonar, listaRayos)
 print(listaRayos)
 lanzarRayos(listaRayos)
 for i in MatrizPixeles:
 	print(i)
+
+
+
+while True:
+	for event in pygame.event.get():
+		if event.type==pygame.QUIT:
+			sys.exit()
+
+	pygame.display.flip()
