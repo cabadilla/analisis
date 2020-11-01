@@ -12,7 +12,9 @@ def raytrace():
     #Raytraces the scene progessively
     while True:
         #random point in the image
-        point = Point(random.uniform(0, 500), random.uniform(0, 500))
+        x, y=random.uniform(0,500), random.uniform(0,500)
+        print(x,y)
+        point = Point(x, y)
         #pixel color
         pixel = 0
 

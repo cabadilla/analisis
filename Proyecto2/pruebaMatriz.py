@@ -1,5 +1,7 @@
 from random import *
+import threading
 
+sonar=[]
 Matriz=[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 	    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
 	    [0, 0, 0, 0, 0, 0, 0, 1, 1, 0],
@@ -160,8 +162,7 @@ def DSurOeste(fila, columna):
 	if tiempo!=False:
 		MatrizPixeles[fila+tiempo][columna-tiempo]=1
 
-def Fabric(Matriz):
-	num=randint(1, 8)
+def Fabric(num):
 	switch={
 		1:DNorte(5,1),
 		2:DSur(5,1),
@@ -180,9 +181,63 @@ def Algoritmo(Matriz):
 	for j in MatrizPixeles:
 		print(j)
 
+def creaCono(Matriz, Coords, n, sonar):
+	sonar.append((Coords[0], Coords[1]))
+	var=1
+	fila=Coords[0]-1
+	columna=Coords[1]+1
+	for i in range(n):
+		var+=2
+		MemoriaFila=fila
+		MemoriaColumna=columna
+		for j in range(var):
+			Matriz[fila][columna]=4
+			sonar.append((fila, columna))
+			fila+=1
+		fila=MemoriaFila-1
+		columna=MemoriaColumna+1
+
+def crearRayos(sonar, listaRayos):
+	cant=randint(1, len(sonar))
+	for i in range(cant):
+		punto=randint(0, len(sonar)-1)
+		if sonar[punto] not in listaRayos:
+			listaRayos.append(sonar[punto])
+		else:
+			i-=1
+
+def lanzarRayos(listaRayos, n):
+	for rayo in listaRayos:
+		n=randint(1,3)
+		listapeque=[]
+		for i in range(n):
+			dire=randint(1,3)
+			if dire not in listapeque:
+				listapeque.append(dire)
+			else:
+				i-=1
+		for i in listapeque:
+			if i==1:
+				hilo=threading.Thread(target=DNorEste(rayo[0], rayo[1]))
+				hilo.start()
+			elif i==2:
+				hilo=threading.Thread(target=DEste(rayo[0], rayo[1]))
+				hilo.start()
+			else:
+				hilo=threading.Thread(target=DSurEste(rayo[0], rayo[1]))
+				hilo.start()
 
 
 
 
 
-Algoritmo(Matriz)
+
+
+listaRayos=[]
+
+creaCono(Matriz, (5,1), 3, sonar)
+crearRayos(sonar, listaRayos)
+print(listaRayos)
+lanzarRayos(listaRayos)
+for i in MatrizPixeles:
+	print(i)
