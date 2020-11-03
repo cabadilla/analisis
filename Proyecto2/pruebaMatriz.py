@@ -4,6 +4,8 @@ import sys, pygame
 from pygame.locals import *
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
+
+
 pygame.init()
 
 #definiendo colores
@@ -11,26 +13,18 @@ NEGRO=[0,0,0]
 BLANCO=[255,255,255]
 
 #se define la imagen
-global img
-img = Image.open('imagenCono.png')
-img=img.convert("RGB")
-
-global Pixeles
-Pixeles=img.load()
-
 
 
 '''for i in range(500):
     for j in range(500):
     	if(pixeles[i,j]!=(255)):
-        	pixeles[i,j]=(200)
+        	pixeles[i,j]=(200)'''
 
 
 
-for i in range(500):
+'''for i in range(500):
     for j in range(500):
-    	if(pixeles[i,j]==(255)):
-        	pixeles[i,j]=(0)
+        Pixeles[i,j]=(255,255,255)
 
 img.save("nueva_imagen.png")'''
 
@@ -51,146 +45,151 @@ sonar=[]
 
 '''
 
-def Norte(Coords, Matriz, Tiempo):
+def Norte(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return Norte((Coords[0]-1, Coords[1]), Matriz, Tiempo+1)
+				return Norte((Coords[0]-1, Coords[1]), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def Sur(Coords, Matriz, Tiempo):
+def Sur(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return Sur((Coords[0]+1, Coords[1]), Matriz, Tiempo+1)
+				return Sur((Coords[0]+1, Coords[1]), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def Este(Coords, Matriz, Tiempo):
+def Este(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			Matriz[Coords[0],Coords[1]]==(0,0,0):
+			pixels[Coords[0],Coords[1]]=(0,0,0)
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return Este((Coords[0], Coords[1]+1), Matriz, Tiempo+1)
+				return Este((Coords[0],Coords[1]+1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def Oeste(Coords, Matriz, Tiempo):
+def Oeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return Oeste((Coords[0], Coords[1]-1), Matriz, Tiempo+1)
+				return Oeste((Coords[0], Coords[1]-1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def NorEste(Coords, Matriz, Tiempo):
+def NorEste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return NorEste((Coords[0]-1, Coords[1]+1), Matriz, Tiempo+1)
+				return NorEste((Coords[0]-1, Coords[1]+1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def SurEste(Coords, Matriz, Tiempo):
+def SurEste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return SurEste((Coords[0]+1, Coords[1]+1), Matriz, Tiempo+1)
+				return SurEste((Coords[0]+1, Coords[1]+1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
-def SurOeste(Coords, Matriz, Tiempo):
+def SurOeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return SurOeste((Coords[0]+1, Coords[1]-1), Matriz, Tiempo+1)
+				return SurOeste((Coords[0]+1, Coords[1]-1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
 def calcularColor(tiempo):
-    pass
+    return (0,255,0)
     
 
-def NorOeste(Coords, Matriz, Tiempo):
+def NorOeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
-			if Matriz[Coords[0],Coords[1]]==(0,0,0):
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
-				return NorOeste((Coords[0]-1, Coords[1]-1), Matriz, Tiempo+1)
+				return NorOeste((Coords[0]-1, Coords[1]-1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
 		return False
 
 def DNorte(fila, columna):
-	tiempo=Norte((fila, columna), Pixeles, 0)
+	tiempo=Norte((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila-tiempo,columna]=calcularColor(tiempo)
+		pixels[fila-tiempo,columna]=calcularColor(tiempo)
 
 
 def DSur(fila, columna):
-	tiempo=Sur((fila, columna), Pixeles, 0)
+	tiempo=Sur((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila+tiempo,columna]=calcularColor(tiempo)
+		pixels[fila+tiempo,columna]=calcularColor(tiempo)
 
-def DEste(fila, columna):
-	tiempo=Este((fila, columna), Pixeles, 0)
+def DEste(fila,columna):
+	tiempo=Este((fila,columna), 0)
 	if tiempo!=False:
-		Pixeles[fila,columna+tiempo]=calcularColor(tiempo)
+		pixels[columna+tiempo,fila]=calcularColor(tiempo)
+		print("dibuje en"+str(fila)+"-"+str(columna))
 
 def DOeste(fila, columna):
-	tiempo=Oeste((fila, columna), Pixeles, 0)
+	tiempo=Oeste((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila-tiempo,columna-tiempo]=calcularColor(tiempo)
+		pixels[fila-tiempo,columna-tiempo]=calcularColor(tiempo)
 
 def DNorEste(fila, columna):
-	tiempo=NorEste((fila, columna), Pixeles, 0)
+	tiempo=NorEste((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila-tiempo,columna+tiempo]=calcularColor(tiempo)
+		pixels[fila-tiempo,columna+tiempo]=calcularColor(tiempo)
+		print("dibuje en"+str(fila)+"-"+str(columna))
 
 def DSurEste(fila, columna):
-	tiempo=SurEste((fila, columna), Pixeles, 0)
+	tiempo=SurEste((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila+tiempo,columna+tiempo]=calcularColor(tiempo)
+		pixels[fila+tiempo,columna+tiempo]=calcularColor(tiempo)
+		print("dibuje en"+str(fila)+"-"+str(columna))
 
 def DNorOeste(fila, columna):
-	tiempo=NorOeste((fila, columna), Pixeles, 0)
+	tiempo=NorOeste((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila-tiempo,columna-tiempo]=calcularColor(tiempo)
+		pixels[fila-tiempo,columna-tiempo]=calcularColor(tiempo)
 
 def DSurOeste(fila, columna):
-	tiempo=SurOeste((fila, columna), Pixeles, 0)
+	tiempo=SurOeste((fila, columna), 0)
 	if tiempo!=False:
-		Pixeles[fila+tiempo,columna-tiempo]=calcularColor(tiempo)
+		pixels[fila+tiempo,columna-tiempo]=calcularColor(tiempo)
+		print("dibuje en"+str(fila)+"-"+str(columna))
 
 def Fabric(num,fil,col):
 	switch={
@@ -203,30 +202,31 @@ def Fabric(num,fil,col):
 		7:DSurOeste(fil,col),
 		8:DNorOeste(fil,col)
 	}
-	img.save("nueva_imagen.png")
 	return switch[num]
 
 
 
 def creaCono(Coords, n, sonar):
 	im = Image.open('imagen.png')
-	im=img.convert("RGB")
+	im=im.convert("RGB")
 	pix=im.load()
 
 	sonar.append((Coords[0], Coords[1]))
 	var=1
 	fila=Coords[0]-1
 	columna=Coords[1]+1
-	for i in range(n):
+	for j in range(n):
 		var+=2
 		MemoriaFila=fila
 		MemoriaColumna=columna
-		for j in range(var):
-			pix[fila,columna]=(254,252,0)
+		for i in range(var):
 			sonar.append((fila, columna))
 			fila+=1
 		fila=MemoriaFila-1
 		columna=MemoriaColumna+1
+
+	for i in sonar:
+		pix[i[0],i[1]]=(254,252,0)
 
 	im.save("imagenCono.png")
 
@@ -263,9 +263,34 @@ def lanzarRayos(listaRayos):
 
 listaRayos=[]
 creaCono((50,250), 25, sonar)
+
+global ima
+global img
+
+img = Image.open('imagenCono.png')
+img=img.convert("RGB")
+
+ima = Image.open('nueva_imagen.png')
+ima=ima.convert("RGB")
+
+global pixels
+global Pixeles
+Pixeles=img.load()
+pixels=ima.load()
+
+
+
 crearRayos(sonar, listaRayos)
 lanzarRayos(listaRayos)
 
+clock = pygame.time.Clock()
+
+
+'''for i in range(500):
+    for j in range(500):
+        pixels[i,j]=(255,255,255)
+
+ima.save("nueva_imagen.png")'''
 
 
 while True:
@@ -273,6 +298,13 @@ while True:
 		if event.type==pygame.QUIT:
 			sys.exit()
 
+	crearRayos(sonar, listaRayos)
+	lanzarRayos(listaRayos)
+
+	ima.save("nueva_imagen.png")
+
 	imagen = pygame.image.load("nueva_imagen.png")
 	screen.blit(imagen,(0,0))
 	pygame.display.flip()
+	
+	clock.tick(30)
