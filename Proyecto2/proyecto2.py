@@ -48,6 +48,7 @@ sonar=[]
 def Norte(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(32,54,6)
 			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
@@ -60,6 +61,7 @@ def Norte(Coords, Tiempo):
 def Sur(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(32,54,6)
 			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
@@ -85,6 +87,7 @@ def Este(Coords, Tiempo):
 def Oeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(32,54,6)
 			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
@@ -124,6 +127,7 @@ def SurEste(Coords, Tiempo):
 def SurOeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(32,54,6)
 			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
@@ -133,13 +137,10 @@ def SurOeste(Coords, Tiempo):
 	except (IndexError):
 		return False
 
-def calcularColor(tiempo):
-	return (0,255,0)
-	
-
 def NorOeste(Coords, Tiempo):
 	try:
 		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(32,54,6)
 			if Pixeles[Coords[0],Coords[1]]==(0,0,0):
 				return Tiempo
 			else:
@@ -208,7 +209,8 @@ def Fabric(num,fil,col):
 	}
 	return switch[num]
 
-
+def calcularColor(tiempo):
+	return (0,255,0)
 
 def creaCono(Coords, n, sonar):
 	im = Image.open('imagen.png')
