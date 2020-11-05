@@ -3,7 +3,7 @@ import threading
 import sys, pygame
 from pygame.locals import *
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
-
+from statistics import mode
 
 
 pygame.init()
@@ -52,6 +52,32 @@ def Norte(Coords, Tiempo):
 				return Tiempo
 			else:
 				return Norte((Coords[0]-1, Coords[1]), Tiempo+1)
+		else:
+			return False
+	except (IndexError):
+		return False
+
+def veinteGradosArriba(Coords,Tiempo):
+	try:
+		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[1],Coords[0]]=(0,46,255)
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0): 
+				return Tiempo
+			else:
+				return veinteGradosArriba((Coords[0]+2,Coords[1]-1), Tiempo+1)
+		else:
+			return False
+	except (IndexError):
+		return False
+
+def veinteGradosAbajo(Coords,Tiempo):
+	try:
+		if Coords[1]>=0 and Coords[0]>=0:
+			#pixels[Coords[0],Coords[1]]=(0,46,255)
+			if Pixeles[Coords[0],Coords[1]]==(0,0,0): 
+				return Tiempo
+			else:
+				return veinteGradosAbajo((Coords[0]+2,Coords[1]+1), Tiempo+1)
 		else:
 			return False
 	except (IndexError):
@@ -149,11 +175,24 @@ def NorOeste(Coords, Tiempo):
 	except (IndexError):
 		return False
 
+
 def DNorte(fila, columna):
 	tiempo=Norte((fila, columna), 0)
 	if tiempo!=False:
 		pixels[fila-tiempo,columna]=calcularColor(tiempo)
 
+
+def DveinteAbajo(fila,columna):
+	tiempo=veinteGradosAbajo((fila,columna), 0)
+	if tiempo!=False:
+		pass
+		pixels[columna+(tiempo-1),fila+2*tiempo-2]=calcularColor(tiempo)
+
+def DveinteArriba(fila,columna):
+	tiempo=veinteGradosArriba((fila,columna), 0)
+	if tiempo!=False:
+		pass
+		pixels[columna-(tiempo-1),fila+2*tiempo-2]=calcularColor(tiempo)
 
 def DSur(fila, columna):
 	tiempo=Sur((fila, columna), 0)
@@ -162,9 +201,9 @@ def DSur(fila, columna):
 
 def DEste(fila,columna):
 	tiempo=Este((fila,columna), 0)
+	#print(fila,columna)
 	if tiempo!=False:
-		pixels[columna,fila-tiempo]=calcularColor(tiempo)
-		#ima.save("nueva_imagen.png")
+		pixels[columna,fila+tiempo]=calcularColor(tiempo)
 
 def DOeste(fila, columna):
 	tiempo=Oeste((fila, columna), 0)
@@ -174,15 +213,15 @@ def DOeste(fila, columna):
 def DNorEste(fila, columna):
 	tiempo=NorEste((fila, columna), 0)
 	if tiempo!=False:
-		print('fds')
-		pixels[columna-tiempo,fila+tiempo]=calcularColor(tiempo)
-		print("dibuje en"+str(fila)+"-"+str(columna))
+		pass
+		pixels[columna+tiempo,fila-tiempo]=calcularColor(tiempo)
+		#print("dibuje en"+str(fila)+"-"+str(columna))
 
 def DSurEste(fila, columna):
 	tiempo=SurEste((fila, columna), 0)
 	if tiempo!=False:
 		pixels[columna+tiempo,fila+tiempo]=calcularColor(tiempo)
-		print("dibuje en"+str(fila)+"-"+str(columna))
+		pass
 
 def DNorOeste(fila, columna):
 	tiempo=NorOeste((fila, columna), 0)
@@ -193,15 +232,15 @@ def DSurOeste(fila, columna):
 	tiempo=SurOeste((fila, columna), 0)
 	if tiempo!=False:
 		pixels[fila+tiempo,columna-tiempo]=calcularColor(tiempo)
-		print("dibuje en"+str(fila)+"-"+str(columna))
+		#print("dibuje en"+str(fila)+"-"+str(columna))
 
 def Fabric(num,fil,col):
 	switch={
 		1:DNorte(fil,col),
 		2:DSur(fil,col),
 		3:DEste(fil,col),
-		4:DOeste(fil,col),
-		5:DNorEste(fil,col),
+		4:DveinteAbajo(fil,col),
+		5:DveinteArriba(fil,col),
 		6:DSurEste(fil,col),
 		7:DSurOeste(fil,col),
 		8:DNorOeste(fil,col)
@@ -211,11 +250,11 @@ def Fabric(num,fil,col):
 
 
 def creaCono(Coords, n, sonar):
+	son=[]
 	im = Image.open('imagen.png')
 	im=im.convert("RGB")
 	pix=im.load()
-
-	sonar.append((Coords[0], Coords[1]))
+	son.append((Coords[0], Coords[1]))
 	var=1
 	fila=Coords[1]-1
 	columna=Coords[0]+1
@@ -224,13 +263,15 @@ def creaCono(Coords, n, sonar):
 		MemoriaFila=fila
 		MemoriaColumna=columna
 		for i in range(var):
-			sonar.append((columna, fila))
+			son.append((columna, fila))
 			fila+=1
 		fila=MemoriaFila-1
 		columna=MemoriaColumna+1
 
-	for i in sonar:
+	for i in son:
 		pix[i[0],i[1]]=(254,252,0)
+		if i[0]==n+Coords[0]:
+			sonar.append(i)
 
 	im.save("imagenCono.png")
 
@@ -245,10 +286,10 @@ def crearRayos(sonar, listaRayos):
 
 def lanzarRayos(listaRayos):
 	for rayo in listaRayos:
-		n=randint(1,3)
+		n=randint(1,5)
 		listapeque=[]
 		for i in range(n):
-			dire=randint(1,3)
+			dire=randint(1,5)
 			if dire not in listapeque:
 				listapeque.append(dire)
 			else:
@@ -260,9 +301,16 @@ def lanzarRayos(listaRayos):
 			elif i==2:
 				hilo=threading.Thread(target=DEste(rayo[0], rayo[1]))
 				hilo.start()
-			else:
+			elif i==3:
 				hilo=threading.Thread(target=DSurEste(rayo[0], rayo[1]))
 				hilo.start()
+			elif i==4:
+				hilo=threading.Thread(target=DveinteArriba(rayo[0], rayo[1]))
+				hilo.start()
+			else:
+				hilo=threading.Thread(target=DveinteAbajo(rayo[0], rayo[1]))
+				hilo.start()
+
 
 
 listaRayos=[]
@@ -299,7 +347,7 @@ def borrar():
 
 	ima.save("nueva_imagen.png")
 
-#borrar()
+borrar()
 while True:
 	for event in pygame.event.get():
 		if event.type==pygame.QUIT:
