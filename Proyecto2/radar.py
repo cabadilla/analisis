@@ -19,10 +19,10 @@ def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 				listaTiempos.append(Tiempo)
 				listaTiempos=CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes-1)
 			else:
-				#if Rebotes<3:
-				#	pixelesResultado[X,Y]=ROJO
-				#else:
-				#	pixelesResultado[X,Y]=VERDE
+				'''if Rebotes<3:
+					pixelesResultado[X,Y]=255
+				else:
+					pixelesResultado[X,Y]=155'''
 				X+=1*math.sin(Angulo)
 				Y+=1*math.cos(Angulo)
 				return Desplazarse(X, Y, Angulo, listaTiempos, Tiempo+1, Rebotes)
@@ -45,20 +45,43 @@ def FabricAngulos(X, Y):
 	Hilo=threading.Thread(target=LanzarRayo(X, Y, Angulo))
 	Hilo.start()
 
+def FabricAngulosSec(X, Y,Ang):
+	Angulo=random.uniform(Ang+0.4, Ang-0.4)
+	Hilo=threading.Thread(target=LanzarRayoSec(X, Y, Ang,Angulo))
+	Hilo.start()
+
+
+def LanzarRayoSec(X, Y, AnguloPrin,Angulo):
+	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
+	contador=0
+	try:
+		if listaTiempos!=[]:
+			for Tiempos in listaTiempos:
+				XFinal=Tiempos*math.sin(AnguloPrin)+X
+				YFinal=Tiempos*math.cos(AnguloPrin)+Y
+				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*Tiempos*1/4)
+				contador+=1
+	except (IndexError):
+		pass
+
 def LanzarRayo(X, Y, Angulo):
 	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
-	print(listaTiempos)
+	contador=0
+	for i in range(5):
+		FabricAngulosSec(X,Y,Angulo)
 	try:
 		if listaTiempos!=[]:
 			for Tiempos in listaTiempos:
 				XFinal=Tiempos*math.sin(Angulo)+X
 				YFinal=Tiempos*math.cos(Angulo)+Y
-				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos)
+				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*1/7)
+				contador+=1
 	except (IndexError):
 		pass
 
 def CalcularColor(Tiempo):
-	return ColorGris
+	intensidad=Tiempo*1/8
+	return int(abs(155-intensidad))
 
 def Borrar():
 	'''
@@ -68,7 +91,7 @@ def Borrar():
 	'''
 	for i in range(500):
 		for j in range(500):
-			pixelesResultado[i,j]=(0,0,0)
+			pixelesResultado[i,j]=(0)
 	imagenResultado.save("nueva_imagen.png")
 
 def creaCono(Coords, n, sonar):
@@ -111,7 +134,7 @@ ROJO = (255, 0, 0)
 PI=3.141592653
 
 #Dimensiones de la pantalla grande
-Dimensiones=[500, 500]
+Dimensiones=[1000, 500]
 
 #Creacion de la pantalla con las dimensiones antes especificadas
 Screen=pygame.display.set_mode(Dimensiones)
@@ -129,7 +152,7 @@ Angulo=0
 imagenCono=Image.open('imagenCono.png')
 imagenCono=imagenCono.convert("RGB")
 imagenResultado=Image.open('nueva_imagen.png')
-imagenResultado=imagenResultado.convert("RGB")
+imagenResultado=imagenResultado.convert("L")
 
 #Matrices de pixeles de ambas imagenes
 pixelesCono=imagenCono.load()
@@ -138,6 +161,7 @@ pixelesResultado=imagenResultado.load()
 Screen.fill(ColorBlanco)
 creaCono((50, 250), 40, [])
 Borrar()
+FabricAngulos(50,250)
 while not Close:
 	for evento in pygame.event.get():  # El usuario hizo algo
 		if evento.type == pygame.QUIT: # Si el usuario hace click sobre cerrar
@@ -149,6 +173,9 @@ while not Close:
 	imagenResultado.save("nueva_imagen.png")
 	imagenNueva = pygame.image.load("nueva_imagen.png")
 	Screen.blit(imagenNueva,(0,0))
+
+	imagenCono = pygame.image.load("imagenCono.png")
+	Screen.blit(imagenCono,(501,0))
 
 	# Avancemos y actualicemos la pantalla con lo que hemos dibujado.
 	pygame.display.flip()
