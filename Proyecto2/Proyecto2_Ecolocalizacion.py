@@ -9,39 +9,44 @@ from PIL import Image, ImageChops, ImageEnhance, ImageOps
 #Numero PI para el calculo de angulos
 PI=3.141592653
 
+#Limite superior e inferior del cono para lanzar los rayos
 lim1=1.8
 lim2=PI/4
 
 def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 	'''
 	Objetivo: Recrea el desplazamiento del rayo dependiendo del angulo que recibe
-	Recibe: X posicion inicial, Y posicion inicial, Angulo hacia donde se dirige, Tiempo que dura en chocar contra un objeto y devolverse
+	Recibe: X posicion inicial, Y posicion inicial, Angulo hacia donde se dirige, Tiempo que dura en chocar contra un objeto y devolverse, Posibles rebotes a realizar
+	Restricciones: El X y el Y deben ser positivos
 	'''
 	try:
 		if X>=0 and Y>=0:
-			if Rebotes==0:
+			if Rebotes==0: #si los rebotes llegan a 0 el rayo muere y se retorna la lista de Tiempos
 				return listaTiempos
-			elif pixelesCono[X, Y]!=(255,255,255) and pixelesCono[X, Y]!=(0, 0, 255):
+			elif pixelesCono[X, Y]!=(255,255,255) and pixelesCono[X, Y]!=(0, 0, 255): #si encuentra algo diferente a blanco o azul el rayo choca
 				listaTiempos.append(Tiempo)
 				listaTiempos=CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes-1)
-			else:
-				
+			else:	
 				#if Rebotes==3:
-					#pixelesResultado[X,Y]=100
+					#pixelesResultado[X,Y]=255
 				#else:
-				#pixelesResultado[X,Y]=100
-				
-				X+=1*math.sin(Angulo)
-				Y+=1*math.cos(Angulo)
-				return Desplazarse(X, Y, Angulo, listaTiempos, Tiempo+1, Rebotes)
+					#pixelesResultado[X,Y]=100
+				X+=1*math.sin(Angulo) #se aumenta la X en direccion al angulo
+				Y+=1*math.cos(Angulo) #se aumenta la Y en direccion al angulo
+				return Desplazarse(X, Y, Angulo, listaTiempos, Tiempo+1, Rebotes) #Llamada recursiva de la funcion 
 		else:
 			return []
 	except (IndexError):
-		return listaTiempos
+		return listaTiempos #si el rayo se va de la imagen se retornan los tiempos que se tuvieron
 	finally:
-		return listaTiempos
+		return listaTiempos #si en tiempo de ejecucion sucede otro acontecimiento se retornan los tiempos
 
 def CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
+	'''
+	Objetivo: Dados los angulos con los que salio, se crean rebotes dependiendo de la estructura con la que choca el objeto
+	Recibe: X posicion inicial, Y posicion inicial, Angulo hacia donde se dirige, Tiempo que dura antes de volver a chocar y los rebotes que le quedan a ese rayo
+	Restricciones: No tiene
+	'''
 	Angulo=random.uniform(lim1-2.5, lim2-(7*PI/4))
 	X+=1*math.sin(Angulo)
 	Y+=1*math.cos(Angulo)
@@ -49,19 +54,34 @@ def CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 	return listaTiempos
 
 def FabricAngulos(X, Y):
-	global lim2
-	global lim1
+	'''
+	Objetivo: Dada la posicion inicial del punto y un cono especificado por los limites, se utiliza un .uniform para crear angulos aleatorios y se lanzar rayos
+	Recibe: X posicion inicial, Y posicion inicial
+	Restricciones: No hay
+	'''
+	global lim1, lim2
+
 	Angulo=random.uniform(lim1, lim2)
 	Hilo=threading.Thread(target=LanzarRayo(X, Y, Angulo))
 	Hilo.start()
 
 def FabricAngulosSec(X, Y,Ang):
+	'''
+	Objetivo: Crea los rayos secundarios que parten de un rayo principal
+	Recibe: X posicion inicial, Y posicion inicial, Angulo del rayo principal
+	Restricciones: No hay
+	'''
 	Angulo=random.uniform(Ang+0.4, Ang-0.4)
 	Hilo=threading.Thread(target=LanzarRayoSec(X, Y, Ang,Angulo))
 	Hilo.start()
 
 
 def LanzarRayoSec(X, Y, AnguloPrin,Angulo):
+	'''
+	Objetivo: Funcion del hilo para lanzar y dibujar los pixeles en el momento que se retorne una lista con los tiempos de rebote
+	Recibe: X posicion inicial, Y posicion inicial, Angulo del rayo principal, Angulo del rayo secundario
+	Restricciones: No hay
+	'''
 	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
 	contador=1
 	try:
@@ -75,9 +95,14 @@ def LanzarRayoSec(X, Y, AnguloPrin,Angulo):
 		pass
 
 def LanzarRayo(X, Y, Angulo):
+	'''
+	Objetivo: Funcion del hilo para lanzar y dibujar los pixeles de los rayos principales en el momento que se retorne una lista con los tiempos de rebote
+	Recibe: X posicion inicial, Y posicion inicial, Angulo del rayo principal
+	Restricciones: No tiene
+	'''
 	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
 	contador=0
-	for i in range(5):
+	for i in range(5): #por cada rayo principal, se lanzan 5 rayos secundarios
 		FabricAngulosSec(X,Y,Angulo)
 	try:
 		if listaTiempos!=[]:
@@ -90,6 +115,11 @@ def LanzarRayo(X, Y, Angulo):
 		pass
 
 def CalcularColor(Tiempo):
+	'''
+	Objetivo: Calcula el color dependiendo del tiempo que dura en ejecucion el rayo
+	Recibe: Tiempo en ejecucion
+	Restricciones: No hay
+	'''
 	return int(abs(155-Tiempo))
 
 def Borrar():
@@ -106,15 +136,24 @@ def Borrar():
 
 
 def rotarCono(x,y,dire):
-	global lim1
-	global lim2
+	'''
+	Objetivo: Rota el cono para poder lanzar rayos en todas las dirrecciones
+	Recibe: X posicion inicial, Y posicion inicial, direccion en a que va (1 para arriba, 2 para abajo, 0 para no rotacion)
+	Restricciones: No tiene
+	'''
+	global lim1, lim2
+	
 	lista=[]
 	if dire==1:
 		lim1=lim1+0.4
 		lim2=lim2+0.4
-	elif dire!=0:
+	elif dire==2:
 		lim1=lim1-0.4
 		lim2=lim2-0.4
+	else:
+		lim1=lim1
+		lim2=lim2
+	
 	xaux=x
 	yaux=y
 
@@ -146,10 +185,8 @@ pygame.init()
 ColorNegro=(0, 0, 0)
 ColorBlanco=(255, 255, 255)
 ColorGris=(155,155,155)
-
 VERDE = (0, 255, 0)
 ROJO = (255, 0, 0)
-
 
 #Dimensiones de la pantalla grande
 Dimensiones=[1000, 500]
@@ -166,7 +203,7 @@ Close=False
 #Angulo inicial del cono 
 Angulo=0
 
-# imagenCono contiene la imagen del cono y imagenResultado contiene la imagen que se va creando
+#ImagenCono contiene la imagen del cono y imagenResultado contiene la imagen que se va creando
 imagenCono=Image.open('imagenCono.png')
 imagenCono=imagenCono.convert("RGB")
 imagenResultado=Image.open('nueva_imagen.png')
@@ -176,33 +213,40 @@ imagenResultado=imagenResultado.convert("L")
 pixelesCono=imagenCono.load()
 pixelesResultado=imagenResultado.load()
 
+#Posicion inicial del sonar
 posicionX=50
 posicionY=250
 
+#Se llena la pantalla de color blaco
 Screen.fill(ColorBlanco)
+
+#Se borra todo lo que habia anteriormente en pantalla
 Borrar()
+
+#Se manda a dibujar el cono en la posicion inicial sin rotacion
 rotarCono(50,250,0)
-FabricAngulos(50,250)
-while not Close:
+
+while not Close: #mientras no este cerrada la ventana
 	for evento in pygame.event.get():  # El usuario hizo algo
 		if evento.type == pygame.QUIT: # Si el usuario hace click sobre cerrar
 			Close=True                 # Marca que ya lo hemos hecho, de forma que abandonamos el bucle
 		if evento.type == pygame.KEYUP:
-			if evento.key == pygame.K_LEFT:
+			if evento.key == pygame.K_LEFT: #Si se pulso la tecla de izquierda el cono rota hacia arriba
 				rotarCono(posicionX,posicionY,1) 
-			if evento.key == pygame.K_RIGHT:
+			if evento.key == pygame.K_RIGHT: #Si se pulso la tecla de derecha el cono rota hacia abajo
 				rotarCono(posicionX,posicionY,2)
-		if evento.type == pygame.MOUSEBUTTONDOWN:
+		if evento.type == pygame.MOUSEBUTTONDOWN: #Si se hizo click en alguna parte de la ventana, se re-posiciona el sonar
 			x,y=evento.pos
 			if(x>500):
 				posicionX=x-500
 				posicionY=y
-				rotarCono(posicionX,posicionY,0)
+				rotarCono(posicionX,posicionY,0) #Se dibuja el cono en la nueva posicion
 
 
 
-	FabricAngulos(posicionX,posicionY)
-	
+	FabricAngulos(posicionX,posicionY) #Se crean infinita cantidad de rayos principales hasta que el programa finalice
+
+	#Se actualizan las imagenes que se utilizan
 	imagenResultado.save("nueva_imagen.png")
 	imagenNueva = pygame.image.load("nueva_imagen.png")
 	Screen.blit(imagenNueva,(0,0))
@@ -216,4 +260,4 @@ while not Close:
 	# Limitamos a 60 fotogramas por segundo
 	Clock.tick(60)
 
-pygame.quit()
+pygame.quit() #Se cierra pygame del todo, para rapido rendimiento
