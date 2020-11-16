@@ -19,10 +19,10 @@ def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 				listaTiempos.append(Tiempo)
 				listaTiempos=CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes-1)
 			else:
-				'''if Rebotes<3:
-					pixelesResultado[X,Y]=255
-				else:
-					pixelesResultado[X,Y]=155'''
+				#if Rebotes<3:
+				#	pixelesResultado[X,Y]=255
+				#else:
+				#	pixelesResultado[X,Y]=100
 				X+=1*math.sin(Angulo)
 				Y+=1*math.cos(Angulo)
 				return Desplazarse(X, Y, Angulo, listaTiempos, Tiempo+1, Rebotes)
@@ -53,7 +53,7 @@ def FabricAngulosSec(X, Y,Ang):
 
 def LanzarRayoSec(X, Y, AnguloPrin,Angulo):
 	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
-	contador=0
+	contador=1
 	try:
 		if listaTiempos!=[]:
 			for Tiempos in listaTiempos:
@@ -74,14 +74,13 @@ def LanzarRayo(X, Y, Angulo):
 			for Tiempos in listaTiempos:
 				XFinal=Tiempos*math.sin(Angulo)+X
 				YFinal=Tiempos*math.cos(Angulo)+Y
-				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*1/7)
+				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*1/5)
 				contador+=1
 	except (IndexError):
 		pass
 
 def CalcularColor(Tiempo):
-	intensidad=Tiempo*1/8
-	return int(abs(155-intensidad))
+	return int(abs(155-Tiempo))
 
 def Borrar():
 	'''
