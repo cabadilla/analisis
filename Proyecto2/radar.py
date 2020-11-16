@@ -6,6 +6,12 @@ import threading
 import sys
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
+#Numero PI para el calculo de angulos
+PI=3.141592653
+
+lim1=1.8
+lim2=PI/4
+
 def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 	'''
 	Objetivo: Recrea el desplazamiento del rayo dependiendo del angulo que recibe
@@ -15,14 +21,16 @@ def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 		if X>=0 and Y>=0:
 			if Rebotes==0:
 				return listaTiempos
-			elif pixelesCono[X, Y]!=(255,255,255) and pixelesCono[X, Y]!=(254,252,0):
+			elif pixelesCono[X, Y]!=(255,255,255) and pixelesCono[X, Y]!=(0, 0, 255):
 				listaTiempos.append(Tiempo)
 				listaTiempos=CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes-1)
 			else:
-				#if Rebotes<3:
-				#	pixelesResultado[X,Y]=255
+				
+				#if Rebotes==3:
+					#pixelesResultado[X,Y]=100
 				#else:
-				#	pixelesResultado[X,Y]=100
+				#pixelesResultado[X,Y]=100
+				
 				X+=1*math.sin(Angulo)
 				Y+=1*math.cos(Angulo)
 				return Desplazarse(X, Y, Angulo, listaTiempos, Tiempo+1, Rebotes)
@@ -34,14 +42,16 @@ def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 		return listaTiempos
 
 def CrearRebotes(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
-	Angulo=random.uniform(0, 2*PI)
+	Angulo=random.uniform(lim1-2.5, lim2-(7*PI/4))
 	X+=1*math.sin(Angulo)
 	Y+=1*math.cos(Angulo)
 	listaTiempos=Desplazarse(X,Y,Angulo,listaTiempos,Tiempo+1,Rebotes)
 	return listaTiempos
 
 def FabricAngulos(X, Y):
-	Angulo=random.uniform(2.3, PI/4)
+	global lim2
+	global lim1
+	Angulo=random.uniform(lim1, lim2)
 	Hilo=threading.Thread(target=LanzarRayo(X, Y, Angulo))
 	Hilo.start()
 
@@ -93,30 +103,41 @@ def Borrar():
 			pixelesResultado[i,j]=(0)
 	imagenResultado.save("nueva_imagen.png")
 
-def creaCono(Coords, n, sonar):
+
+
+def rotarCono(x,y,dire):
+	global lim1
+	global lim2
+	lista=[]
+	if dire==1:
+		lim1=lim1+0.4
+		lim2=lim2+0.4
+	elif dire!=0:
+		lim1=lim1-0.4
+		lim2=lim2-0.4
+	xaux=x
+	yaux=y
+
 	imagenLocal=Image.open('imagen.png')
 	imagenLocal=imagenLocal.convert("RGB")
 	pixelesLocal=imagenLocal.load()
+	pixelesLocal[x,y]=(0, 0, 255)
 
-	sonar.append((Coords[0], Coords[1]))
-	var=1
-	fila=Coords[1]-1
-	columna=Coords[0]+1
-	for j in range(n):
-		var+=2
-		MemoriaFila=fila
-		MemoriaColumna=columna
-		for i in range(var):
-			sonar.append((columna, fila))
-			fila+=1
-		fila=MemoriaFila-1
-		columna=MemoriaColumna+1
+	for i in range(40):
+		xaux+=1*math.sin(lim1)
+		yaux+=1*math.cos(lim1)
+		pixelesLocal[xaux,yaux]=(0, 0, 255)
 
-	for i in sonar:
-		pixelesLocal[i[0],i[1]]=(254,252,0)
+	xaux=x
+	yaux=y
+	for i in range(40):
+		xaux+=1*math.sin(lim2)
+		yaux+=1*math.cos(lim2)
+		pixelesLocal[xaux,yaux]=(0, 0, 255)
+
+
 
 	imagenLocal.save("imagenCono.png")
-
 
 #Inicio de la pantalla de pygame
 pygame.init()
@@ -129,8 +150,6 @@ ColorGris=(155,155,155)
 VERDE = (0, 255, 0)
 ROJO = (255, 0, 0)
 
-#Numero PI para el calculo de angulos
-PI=3.141592653
 
 #Dimensiones de la pantalla grande
 Dimensiones=[1000, 500]
@@ -157,17 +176,32 @@ imagenResultado=imagenResultado.convert("L")
 pixelesCono=imagenCono.load()
 pixelesResultado=imagenResultado.load()
 
+posicionX=50
+posicionY=250
+
 Screen.fill(ColorBlanco)
-creaCono((50, 250), 40, [])
 Borrar()
+rotarCono(50,250,0)
 FabricAngulos(50,250)
 while not Close:
 	for evento in pygame.event.get():  # El usuario hizo algo
 		if evento.type == pygame.QUIT: # Si el usuario hace click sobre cerrar
 			Close=True                 # Marca que ya lo hemos hecho, de forma que abandonamos el bucle
+		if evento.type == pygame.KEYUP:
+			if evento.key == pygame.K_LEFT:
+				rotarCono(posicionX,posicionY,1) 
+			if evento.key == pygame.K_RIGHT:
+				rotarCono(posicionX,posicionY,2)
+		if evento.type == pygame.MOUSEBUTTONDOWN:
+			x,y=evento.pos
+			if(x>500):
+				posicionX=x-500
+				posicionY=y
+				rotarCono(posicionX,posicionY,0)
 
 
-	FabricAngulos(50,250)
+
+	FabricAngulos(posicionX,posicionY)
 	
 	imagenResultado.save("nueva_imagen.png")
 	imagenNueva = pygame.image.load("nueva_imagen.png")
