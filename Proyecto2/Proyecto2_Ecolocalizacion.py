@@ -89,7 +89,7 @@ def LanzarRayoSec(X, Y, AnguloPrin,Angulo):
 			for Tiempos in listaTiempos:
 				XFinal=Tiempos*math.sin(AnguloPrin)+X
 				YFinal=Tiempos*math.cos(AnguloPrin)+Y
-				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*Tiempos*1/4)
+				pixelesResultado[XFinal, YFinal]=CalcularColor((Tiempos/contador))
 				contador+=1
 	except (IndexError):
 		pass
@@ -101,7 +101,7 @@ def LanzarRayo(X, Y, Angulo):
 	Restricciones: No tiene
 	'''
 	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
-	contador=0
+	contador=1
 	for i in range(5): #por cada rayo principal, se lanzan 5 rayos secundarios
 		FabricAngulosSec(X,Y,Angulo)
 	try:
@@ -109,7 +109,7 @@ def LanzarRayo(X, Y, Angulo):
 			for Tiempos in listaTiempos:
 				XFinal=Tiempos*math.sin(Angulo)+X
 				YFinal=Tiempos*math.cos(Angulo)+Y
-				pixelesResultado[XFinal, YFinal]=CalcularColor(Tiempos-contador*1/5)
+				pixelesResultado[XFinal, YFinal]=CalcularColor((Tiempos/contador)/5)
 				contador+=1
 	except (IndexError):
 		pass
@@ -120,7 +120,10 @@ def CalcularColor(Tiempo):
 	Recibe: Tiempo en ejecucion
 	Restricciones: No hay
 	'''
-	return int(abs(155-Tiempo))
+	if (255-Tiempo*0.4)>0:
+		return int(255-Tiempo*0.4)
+	else:
+		return 0
 
 def Borrar():
 	'''
