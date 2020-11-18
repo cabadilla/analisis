@@ -4,6 +4,7 @@ import math
 import random
 import threading
 import sys
+from time import time
 from PIL import Image, ImageChops, ImageEnhance, ImageOps
 
 #Numero PI para el calculo de angulos
@@ -12,6 +13,9 @@ PI=3.141592653
 #Limite superior e inferior del cono para lanzar los rayos
 lim1=1.8
 lim2=PI/4
+
+rayosSecundarios=0
+rayosPrimarios=0
 
 def Desplazarse(X, Y, Angulo, listaTiempos, Tiempo, Rebotes):
 	'''
@@ -61,6 +65,9 @@ def FabricAngulos(X, Y):
 	'''
 	global lim1, lim2
 
+	global rayosPrimarios
+	rayosPrimarios+=1
+
 	Angulo=random.uniform(lim1, lim2)
 	Hilo=threading.Thread(target=LanzarRayo(X, Y, Angulo))
 	Hilo.start()
@@ -71,6 +78,9 @@ def FabricAngulosSec(X, Y,Ang):
 	Recibe: X posicion inicial, Y posicion inicial, Angulo del rayo principal
 	Restricciones: No hay
 	'''
+	global rayosSecundarios
+	rayosSecundarios+=1
+
 	Angulo=random.uniform(Ang+0.4, Ang-0.4)
 	Hilo=threading.Thread(target=LanzarRayoSec(X, Y, Ang,Angulo))
 	Hilo.start()
@@ -100,10 +110,16 @@ def LanzarRayo(X, Y, Angulo):
 	Recibe: X posicion inicial, Y posicion inicial, Angulo del rayo principal
 	Restricciones: No tiene
 	'''
-	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
-	contador=1
+
 	for i in range(5): #por cada rayo principal, se lanzan 5 rayos secundarios
 		FabricAngulosSec(X,Y,Angulo)
+
+	listaTiempos=Desplazarse(X, Y, Angulo, [], 0,3)
+
+	'''for i in range(5): #por cada rayo principal, se lanzan 5 rayos secundarios
+		FabricAngulosSec(X,Y,Angulo)'''
+
+	contador=1
 	try:
 		if listaTiempos!=[]:
 			for Tiempos in listaTiempos:
@@ -230,6 +246,7 @@ Borrar()
 
 #Se manda a dibujar el cono en la posicion inicial sin rotacion
 rotarCono(50,250,0)
+tiempo_inicial=time()
 
 while not Close: #mientras no este cerrada la ventana
 	for evento in pygame.event.get():  # El usuario hizo algo
@@ -266,3 +283,10 @@ while not Close: #mientras no este cerrada la ventana
 	Clock.tick(60)
 
 pygame.quit() #Se cierra pygame del todo, para rapido rendimiento
+tiempoFinal=time()
+tiempoEjecucion = time() - tiempo_inicial
+
+
+print("rayos primarios: "+str(rayosPrimarios))
+print("rayos secundarios: "+str(rayosSecundarios))
+print("tiempo: "+str(tiempoEjecucion))
