@@ -120,8 +120,10 @@ def CalcularColor(Tiempo):
 	Recibe: Tiempo en ejecucion
 	Restricciones: No hay
 	'''
-	if (255-Tiempo*0.4)>0:
-		return int(255-Tiempo*0.4)
+	#if (255-Tiempo*0.4)>0:
+		#return int(255-Tiempo*0.4)
+	if (((-254/749)*Tiempo)+255)>0:
+		return int(((-254/300)*Tiempo)+255)
 	else:
 		return 0
 
