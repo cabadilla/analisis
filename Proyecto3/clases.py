@@ -15,3 +15,8 @@ class flores:
         self.abejas=[]
         self.generacion=gene
 
+class panal:
+    def __init__(self,coord,abejas):
+        self.coordenadas=coord
+        self.enjambre=abejas
+        

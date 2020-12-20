@@ -152,7 +152,7 @@ def devolverColor():
         7:(255,171,51),
         8:(254,7,160)
     }
-    return colores[randint(1,9)]
+    return colores[randint(1,8)]
 
 def devolverDireccion():
     diccionarioDirecciones={
@@ -166,7 +166,7 @@ def devolverDireccion():
         8:('SO','111')
        
     }
-    return diccionarioDirecciones[randint(1,9)]
+    return diccionarioDirecciones[randint(1,8)]
 
 
 def generarPoblacionInicialDeAbejas(cantidad, panal):
