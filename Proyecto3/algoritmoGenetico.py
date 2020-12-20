@@ -178,10 +178,12 @@ def generarPoblacionInicialDeAbejas(cantidad, panal):
 def generarPoblacionInicialDeFlores(cantidad):
     poblacion=[]
 
-    x=randint(0,101)
-    y=randint(0,101)
+    x=randint(0,50)
+    y=randint(0,50)
 
     for i in range(cantidad):
         poblacion.append(flores((x,y),devolverColor(),1))
+        x=randint(0,50)
+        y=randint(0,50)
 
     return poblacion
