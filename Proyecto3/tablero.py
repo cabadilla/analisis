@@ -4,15 +4,14 @@ from pygame import surface
 from algoritmoGenetico import *
 from clases import *
 
-#tamano ventana
+#Tamano ventana
 size = (700,700)
-global screen
 BLANCO=(255,255,255)
 screen=pygame.display.set_mode(size)
 screen.fill(BLANCO)
 run=True
 
-#matriz de objetos en el tablero
+#Matriz de objetos en el tablero
 matriz=[]
 image=pygame.image.load("imagenes/cuadro.png")
 image=pygame.transform.scale(image,(14,14))
@@ -25,23 +24,26 @@ for i in range(0,50):
         arreglo.append(None)
     matriz.append(arreglo)
 
-#cordenadas del panal
+
+
+#Se crea el panal con la primera generacion inicial de abejas
 panal=panal((25,25),generarPoblacionInicialDeAbejas(10,(25,25)))
 matriz[25][25]=panal
 screen.blit(panal.imagen,(14*25,14*25))
 
-#se crea las primeras flores
+
+
+
+#Primera generacion de flores
 flores=generarPoblacionInicialDeFlores(25)
-print(flores)
 for i in flores:
-    pygame.draw.rect(screen,i.colorFavorito,[i.posicion[0]*14,i.posicion[1]*14,14,14])
+    pygame.draw.rect(screen,i.colorDeFlor,[i.posicion[0]*14,i.posicion[1]*14,14,14])
 
-#loop del juego
+
+
+
+#loop de la simulacion
 while run:
-
-    #ve constantemente si tiene que correr las fichas
-
-
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             sys.exit()
@@ -51,3 +53,5 @@ while run:
 
     #se actualiza
     pygame.display.flip()
+
+pygame.quit() #Se cierra pygame del todo, para rapido rendimiento
