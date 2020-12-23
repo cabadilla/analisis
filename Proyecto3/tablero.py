@@ -16,6 +16,11 @@ run=True
 
 
 def calcularPuntosDif(dir,x,y):
+    '''
+    Objetivo: Calcula el limite inferior de la vision de las abejas
+    Recibe: Una direccion, unas coordenadas
+    Retorna: El proceso que tenga que realizar dependiendo de la direccion
+    '''
     diccionario={
         'N':(x-1,y+1),
         'S':(x+1,y-1),
@@ -29,6 +34,11 @@ def calcularPuntosDif(dir,x,y):
     return diccionario[dir]
     
 def calcularPuntos(dir,x,y):
+    '''
+    Objetivo: Calcula el limite superior de la vision de las abejas
+    Recibe: Una direccion, unas coordenadas
+    Retorna: El proceso que tenga que realizar dependiendo de la direccion
+    '''
     diccionario={
         'N':(x-1,y),
         'S':(x+1,y),
@@ -43,6 +53,11 @@ def calcularPuntos(dir,x,y):
     return diccionario[dir]
 
 def calcularPuntosRelleno(dir,x,y):
+    '''
+    Objetivo: Calcula todos los puntos matriz que se encuentran dentro de la vision de las abejas
+    Recibe: Una direccion, unas coordenadas
+    Retorna: El proceso que debe realizar para poder calcular el relleno
+    '''
     diccionario={
         'N':(x,y+1),
         'S':(x,y-1),
@@ -56,6 +71,11 @@ def calcularPuntosRelleno(dir,x,y):
     return diccionario[dir]
 
 def hallarTriangulo(abeja):
+    '''
+    Objetivo: Encuentra todo el triangulo de vision de las abejas, depende de la direccion fav
+    Recibe: Una abeja
+    Retorna: La lista de todos los puntos de la matriz en vision de esa abeja
+    '''
     listaPuntosLimiteSuperior=[]
     listaPuntosLimitesInferior=[]
     listaTriangulo=[]
@@ -79,6 +99,11 @@ def hallarTriangulo(abeja):
 
 #se inicia el recorrido
 def recorridoUnaAbeja(abeja,matrizTablero):
+    '''
+    Objetivo: Simula el recorrido de la abeja para encontrar flores
+    Recibe: Una abeja y la matriz del Tablero que es el campo de flores
+    Retorna: La abeja con su recorrido modificado
+    '''
     triangulo=hallarTriangulo(abeja)
     posiblesFlores=[]
     for i in range(15):
@@ -93,6 +118,11 @@ def recorridoUnaAbeja(abeja,matrizTablero):
     return abeja
 
 def recorridoGeneracion(generacionAbejas,matriz):
+    '''
+    Objetivo: Realiza el recorrido de todas las abejas utilizando su funcion auxiliar
+    Recibe: La generaccion actual de abejas y la matriz del campo
+    Retorna: La nueva generacion de abejas
+    '''
     finalGeneracion=[]
     for i in generacionAbejas:
         finalGeneracion.append(recorridoUnaAbeja(i,matriz))
@@ -100,11 +130,16 @@ def recorridoGeneracion(generacionAbejas,matriz):
     nuevaGeneracion=(cruceAbejas(finalGeneracion))
     return nuevaGeneracion
 
-def inciarGeneraciones(pana,flores,matrizT):
-    nueva=recorridoGeneracion(pana.enjambre,matrizT)
-    pana.enjambre=nueva
+def inciarGeneraciones(panal,flores,matrizT):
+    '''
+    Objetivo: Realiza la primera generacion de abejas y flores
+    Recibe: El panall de abejas, las flores y el campo del trabajo
+    Retorna: El panall y todas las flores nuevas
+    '''
+    nueva=recorridoGeneracion(panal.enjambre,matrizT)
+    panal.enjambre=nueva
     floresNuevas=cruceFlores(flores)
-    return pana,floresNuevas
+    return panal,floresNuevas
 
 
 #Se crea el panal con la primera generacion inicial de abejas
@@ -112,10 +147,13 @@ panal=panal((25,25),generarPoblacionInicialDeAbejas(10,(25,25)))
 #Primera generacion de flores
 flores=generarPoblacionInicialDeFlores(50,49)
 hacer=True
+#Controlador de los archivos de texto
+ControladorDeTXT=controladorTXT()
+
 #loop de la simulacion
 while True:
     if(hacer):
-        for i in range(30):
+        for gen in range(30):
             screen.fill(BLANCO)#Matriz de objetos en el tablero
             matriz=[]
             image=pygame.image.load("imagenes/cuadro.png")
@@ -131,11 +169,12 @@ while True:
             matriz[25][25]=panal
             screen.blit(panal.imagen,(14*25,14*25))
 
-            for i in flores:
-                matriz[i.posicion[0]][i.posicion[1]]=i
-                pygame.draw.rect(screen,i.colorDeFlor,[i.posicion[0]*14,i.posicion[1]*14,14,14])
+            for flor in flores:
+                matriz[flor.posicion[0]][flor.posicion[1]]=flor
+                pygame.draw.rect(screen,flor.colorDeFlor,[flor.posicion[0]*14,flor.posicion[1]*14,14,14])
             
             panal,flores=inciarGeneraciones(panal,flores,matriz)
+            ControladorDeTXT.escribirTXT(panal.enjambre, gen)
             #se actualiza
             pygame.display.flip()
             time.sleep(3)

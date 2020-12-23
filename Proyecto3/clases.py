@@ -1,4 +1,5 @@
 import pygame
+import os
 """
 Archivo .py dedicado especialmente para las clases que son utilizadas 
 dentro del proyecto, esto con el fin de llevar un mejor orden de en 
@@ -43,9 +44,13 @@ class flores:
         self.colorDeFlor=colorFlor #color de la flor 
         self.abejas=[] #abejas que han visitado esta flor
         
-
 #--------------------------------------Clase del panal de abejas-----------------------------------------------------
 class panal:
+    '''
+    Clase panal, este objeto es el que va a almacenar
+    todas las abejas y dentro de el van a suceder todos los 
+    procesos de reproduccion y genetica
+    '''
     def __init__(self, ubicacionMapa, abejas):
         '''
         Objetivo: Constructor de la clase, tiene el objetivo de crear una instancia del tipo panal
@@ -55,4 +60,51 @@ class panal:
         self.ubicacionPanal=ubicacionMapa #coordenadas donde se encuentra el panal
         self.enjambre=abejas #enjambre de abejas
         self.imagen=pygame.image.load("imagenes/PanalAbejas.png") #imagen para el despliegue grafico
-        self.imagen=pygame.transform.scale(self.imagen,(50,50)) 
+        self.imagen=pygame.transform.scale(self.imagen,(50,50))
+
+#--------------------------------------Clase para el manejo de archivos-----------------------------------------------------
+class controladorTXT:
+    '''
+    Clase controladorTXT, esta clase esta dedicada para hacer el manejo del
+    registro de todas las generaciones para poder ver el algoritmo
+    funcionando conforme pasan generaciones 
+    '''
+    def __init__(self):
+        '''
+        Objetivo: Tiene como objetivo el abrir un archivo nuevo en blanco con el nombre de ResgistroSimulacion
+        Recibe: No recibe nada
+        Retorna: El archivo creado en el directorio del proyecto
+        '''
+        file=open("RegistroSimulacion.txt", "w") #txt que almacena todas las generaciones que han sucedido durante la corrida del programa
+        file.close()
+        file=open("GeneracionAnterior.txt", "w") #txt que almacena la generacion que se va a ir desplegando conforme se pase de generacion
+        file.close()
+
+    def leerTXT(self):
+        '''
+        Objetivo Tiene como objetivo el leer el archivo txt, e imprimir todas las abejas con los detalles necesarios
+        Recibe: No recibe nada
+        Retorna: En consola imprime los detalles de las abejas
+        '''
+        file=open("GeneracionAnterior.txt", "r") #se lee la generacion anterior para desplegarse en el programa
+        for lines in file:
+            print(file.readline())
+        file.close()
+
+    def escribirTXT(self, enjambre, generacion):
+        '''
+        Objetivo: Tiene el objetivo de escribir toda la generacion actual dentro del txt para manejar su uso
+        Recibe: Recibe el enjambre de abejas y la generacion actual
+        Retorna: No retorna nada 
+        '''
+        file=open("RegistroSimulacion.txt", "a") #le hace un append al archivo de los registros simulacion
+        file.write("--------------Generacion "+str(generacion)+"--------------"+os.linesep)
+        for abeja in enjambre:
+            file.write(str(abeja.polem)+os.linesep)
+        file.close()
+
+        file=open("GeneracionAnterior.txt", "w") #le hace update a la relacion anterior
+        file.write("--------------Generacion "+str(generacion)+"--------------"+os.linesep)
+        for abeja in enjambre:
+            file.write(str(abeja.polem)+os.linesep)
+        file.close()
