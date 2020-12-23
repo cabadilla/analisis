@@ -13,7 +13,7 @@ class abejas:
     de las abejas, con sus caracteristicas definidas
     y sus acciones dentro del programa
     '''
-    def __init__(self, DireccionFav, ColorFav, Coordenadas, GeneracionActual):
+    def __init__(self, DireccionFav, ColorFav, Coordenadas):
         '''
         Objetivo: Constructor de la clase, tiene el objetivo de crear una instancia del tipo abejas
         Recibe: una direccion favorita, un color favorito, unas coordenadas y una generacion de individuo
@@ -24,7 +24,6 @@ class abejas:
         self.colorFavorito=ColorFav #color favorito
         self.coordenadasActuales=Coordenadas #coordenadas donde se encuentra
         self.distanciaRecorrida=0 #distancia que ha recorrido
-        self.generacion=GeneracionActual  #generacion actual
 
 #--------------------------------------Clase de las flores-----------------------------------------------------
 class flores:
@@ -34,15 +33,14 @@ class flores:
     ademas de las acciones que van a realizar dentro del
     programa
     '''
-    def __init__(self, posicionMapa, colorFlor, GeneracionActual):
+    def __init__(self, posicionMapa, colorFlor):
         '''
         Objetivo: Constructor de la clase, tiene el objetivo de crear una instancia del tipo flores
         Recibe: Una posicion en la que se va a encontrar la flor, un color de flor y una generacion de individuo
         Retorna: Un objeto flor unico con caracteristicas propias
         '''
         self.posicion=posicionMapa #posicion donde se encuentra
-        self.colorDeFlor=colorFlor #color de la flor
-        self.generacion=GeneracionActual #generacion actual 
+        self.colorDeFlor=colorFlor #color de la flor 
         self.abejas=[] #abejas que han visitado esta flor
         
 

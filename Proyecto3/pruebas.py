@@ -1,4 +1,5 @@
-from clases import abejas,flores
+from clases import abejas,flores,panal
+from algoritmoGenetico import *
 import numpy
 from random import randint
 
@@ -56,5 +57,4 @@ diccionarioDirecciones={
     
 }
 
-print(diccionarioDirecciones[3])
-
+panal=panal((25,25),generarPoblacionInicialDeAbejas(10,(25,25)))

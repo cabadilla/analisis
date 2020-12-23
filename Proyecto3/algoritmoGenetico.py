@@ -1,4 +1,4 @@
-from clases import abejas,flores 
+from clases import abejas,flores,panal
 import numpy
 from random import randint
 
@@ -9,22 +9,26 @@ def funcionAdaptabilidadAbejas(abejas):
     for i in range(6):
         mayorCantidadFlores=0
         for abeja in range(len(abejas)):
-            if len(abejas[abeja].polen)>mayorCantidadFlores:
-                mayorCantidadFlores=len(abejas[abeja].polen)
+            if len(abejas[abeja].polem)>mayorCantidadFlores:
+                mayorCantidadFlores=len(abejas[abeja].polem)
                 mejorAbeja=abeja
-        mejoresAbejas.append(abejas.pop(mejorAbeja))
+        if(mejorAbeja<len(abejas)):
+            mejoresAbejas.append(abejas.pop(mejorAbeja))
     return mejoresAbejas
 
 
 
-def funcionAdaptabilidadFlores(flores):
+def funcionAdaptabilidadFlores(flo):
     mejoresFlores=[]
     mejorFlor=0
-    for i in range(10):
-        for flor in range(len(flores)):
-            if len(flores[i].abejas)>mejorFlor:
+    for i in range(50):
+        for flor in range(len(flo)-1):
+            if len(flo[flor].abejas)>mejorFlor:
                 mejorFlor=flor
-        mejoresFlores.append(abejas.pop(mejorFlor))
+        if(len(flo[mejorFlor].abejas)!=0) and (len(flo[mejorFlor].abejas)-1<mejorFlor):
+            mejoresFlores.append(flo.pop(mejorFlor))
+        else:
+            mejoresFlores.append(flores((randint(0,49),randint(0,49)),devolverColor()))
 
     return mejoresFlores
 
@@ -60,8 +64,8 @@ def cruceAbeja(abejaUno,abejaDos):
     }
 
 
-    direccionUno=diccionarioDirecciones[abejaUno.direccionFavorita]
-    direccionDos=diccionarioDirecciones[abejaDos.direccionFavorita]
+    direccionUno=diccionarioDirecciones[abejaUno.direccionFavorita[0]]
+    direccionDos=diccionarioDirecciones[abejaDos.direccionFavorita[0]]
     for i in range(3):
         num=randint(0,1)
         if num==0:
@@ -69,8 +73,8 @@ def cruceAbeja(abejaUno,abejaDos):
         else:
             cromosomaDireccion+=direccionDos[i]
 
-    colorUno=(llenar(bin(abejaUno.colorFavorito[0])),llenar(bin(abejaUno.colorFavorito[1])),llenar(bin(abejaUno.colorFavorito[2])),8)
-    colorDos=(llenar(bin(abejaDos.colorFavorito[0])),llenar(bin(abejaDos.colorFavorito[1])),llenar(bin(abejaDos.colorFavorito[2])),8)
+    colorUno=(llenar(bin(abejaUno.colorFavorito[0]),8),llenar(bin(abejaUno.colorFavorito[1]),8),llenar(bin(abejaUno.colorFavorito[2]),8))
+    colorDos=(llenar(bin(abejaDos.colorFavorito[0]),8),llenar(bin(abejaDos.colorFavorito[1]),8),llenar(bin(abejaDos.colorFavorito[2]),8))
 
     for i in range (3):
         for j in range (8):
@@ -89,8 +93,8 @@ def cruceAbejas(abejas):
     abejaUno=0
     abejaDos=0
     for i in range(12):
-        abejaUno=randint(0,len(mejoresAbejas))
-        abejaDos=randint(0,len(mejoresAbejas))
+        abejaUno=randint(0,len(mejoresAbejas)-1)
+        abejaDos=randint(0,len(mejoresAbejas)-1)
 
         nuevasAbejas.append(cruceAbeja(mejoresAbejas[abejaUno],mejoresAbejas[abejaDos]))
 
@@ -98,23 +102,31 @@ def cruceAbejas(abejas):
 
 
 def cruceFlor(florUno,florDos):
-    cromosomasPosicion=('','')
-    cromosomasColor=('','','')
+    cromosomasColor=['','','']
 
-    cordsUno=(llenar(bin(florUno.posicion[0]),6),llenar(bin(florUno.posicion[1]),7))
-    cordsDos=(llenar(bin(florDos.posicion[0]),6),llenar(bin(florDos.posicion[1]),7))
+    cordsUno=(llenar(bin(florUno.posicion[0]),6),llenar(bin(florUno.posicion[1]),6))
+    cordsDos=(llenar(bin(florDos.posicion[0]),6),llenar(bin(florDos.posicion[1]),6))
 
-    for i in range (2):
-        for j in range (7):
-            num=randint(0,1)
-            if num==0:
-                cromosomasPosicion[i]+=cordsUno[i][j]
-            else:
-                cromosomasPosicion[i]+=cordsDos[i][j]
+    posicion1=''
+    posicion2=''
+    for i in range(3):
+        posicion1+=cordsUno[0][i]
+    for i in [3,4,5]:
+        posicion1+=cordsDos[0][i]
 
+    for i in range(3):
+        posicion2+=cordsUno[1][i]
+    for i in [3,4,5]:
+        posicion2+=cordsDos[1][i]
 
-    colorUno=(llenar(bin(florUno.colorFavorito[0])),llenar(bin(florUno.colorFavorito[1])),llenar(bin(florUno.colorFavorito[2])),8)
-    colorDos=(llenar(bin(florDos.colorFavorito[0])),llenar(bin(florDos.colorFavorito[1])),llenar(bin(florDos.colorFavorito[2])),8)
+    if(int(posicion1,2)>49):
+        posicion1='110001'
+    if(int(posicion2,2)>49):
+        posicion2='110001'
+    cromosomasPosicion=(posicion1,posicion2)
+
+    colorUno=(llenar(bin(florUno.colorDeFlor[0]),8),llenar(bin(florUno.colorDeFlor[1]),8),llenar(bin(florUno.colorDeFlor[2]),8))
+    colorDos=(llenar(bin(florDos.colorDeFlor[0]),8),llenar(bin(florDos.colorDeFlor[1]),8),llenar(bin(florDos.colorDeFlor[2]),8))
 
     for i in range (3):
         for j in range (8):
@@ -125,19 +137,18 @@ def cruceFlor(florUno,florDos):
                 cromosomasColor[i]+=colorDos[i][j]
 
     nuevaFlor=flores((int(cromosomasPosicion[0],2),int(cromosomasPosicion[1],2)),(int(cromosomasColor[0],2),int(cromosomasColor[1],2),int(cromosomasColor[2],2)))
-    
+    return nuevaFlor
 
 
 def cruceFlores(flores):
-    mejoresFlores=funcionAdaptabilidadAbejas(flores)
+    mejoresFlores=funcionAdaptabilidadFlores(flores)
     nuevasFlores=[]
     florUno=0
     florDos=0
-    for i in range(20):
-        florUno=randint(0,len(mejoresFlores))
-        florDos=randint(0,len(mejoresFlores))
-
-        nuevasAbejas.append(cruceFlor(mejoresFlores[florUno],mejoresFlores[florDos]))
+    for i in range(50):
+        florUno=randint(0,len(mejoresFlores)-1)
+        florDos=randint(0,len(mejoresFlores)-1)
+        nuevasFlores.append(cruceFlor(mejoresFlores[florUno],mejoresFlores[florDos]))
 
     return nuevasFlores
 
@@ -172,18 +183,16 @@ def devolverDireccion():
 def generarPoblacionInicialDeAbejas(cantidad, panal):
     poblacion=[]
     for i in range (cantidad):
-        poblacion.append(abejas(devolverDireccion(),devolverColor(),panal,1))
+        poblacion.append(abejas(devolverDireccion(),devolverColor(),panal))
     return poblacion
 
-def generarPoblacionInicialDeFlores(cantidad):
+def generarPoblacionInicialDeFlores(cantidad,n):
     poblacion=[]
 
-    x=randint(0,50)
-    y=randint(0,50)
-
     for i in range(cantidad):
-        poblacion.append(flores((x,y),devolverColor(),1))
-        x=randint(0,50)
-        y=randint(0,50)
+        x=randint(0,n-1)
+        y=randint(0,n-1)
+        poblacion.append(flores((x,y),devolverColor()))
+       
 
     return poblacion
