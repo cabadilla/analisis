@@ -66,23 +66,43 @@ def cruceAbeja(abejaUno,abejaDos):
 
     direccionUno=diccionarioDirecciones[abejaUno.direccionFavorita[0]]
     direccionDos=diccionarioDirecciones[abejaDos.direccionFavorita[0]]
-    for i in range(3):
+    '''for i in range(3):
         num=randint(0,1)
         if num==0:
             cromosomaDireccion+=direccionUno[i]
         else:
-            cromosomaDireccion+=direccionDos[i]
+            cromosomaDireccion+=direccionDos[i]'''
+    cromosomaDireccion+=direccionUno[0]
+    muta=randint(0,1)
+    cromosomaDireccion+=str(muta)
+    cromosomaDireccion+=direccionDos[2]
 
     colorUno=(llenar(bin(abejaUno.colorFavorito[0]),8),llenar(bin(abejaUno.colorFavorito[1]),8),llenar(bin(abejaUno.colorFavorito[2]),8))
     colorDos=(llenar(bin(abejaDos.colorFavorito[0]),8),llenar(bin(abejaDos.colorFavorito[1]),8),llenar(bin(abejaDos.colorFavorito[2]),8))
 
-    for i in range (3):
+    '''for i in range (3):
         for j in range (8):
             num=randint(0,1)
             if num==0:
                 cromosomaColor[i]+=colorUno[i][j]
             else:
-                cromosomaColor[i]+=colorDos[i][j]
+                cromosomaColor[i]+=colorDos[i][j]'''
+    cromosomaColor[0]+=colorUno[0]
+    cromosomaColor[2]+=colorDos[2]
+    for i in range(4):
+        cromosomaColor[1]+=colorUno[1][i]
+    for i in [4,5,6,7]:
+        cromosomaColor[1]+=colorDos[1][i]
+    mutaCromosoma=randint(0,7)
+    muta=randint(0,1)
+    cromosomaMutado=''
+    for i in range(8):
+        if(i!=mutaCromosoma):
+            cromosomaMutado+=cromosomaColor[1][i]
+        else:
+            cromosomaMutado+=str(muta)
+    cromosomaColor[1]=cromosomaMutado
+
         
     nuevaAbeja=abejas(diccionarioDirecciones[cromosomaDireccion],(int(cromosomaColor[0],2),int(cromosomaColor[1],2),int(cromosomaColor[2],2)),(0,0))
     return nuevaAbeja

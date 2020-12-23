@@ -42,8 +42,6 @@ def llenar(binario,num):
     while len(nuevoValor) != num:
         nuevoValor='0'+nuevoValor
     return nuevoValor
-    
-print(llenar(bin(45),10))
 
 diccionarioDirecciones={
     1:('N','000'),
@@ -57,4 +55,5 @@ diccionarioDirecciones={
     
 }
 
-panal=panal((25,25),generarPoblacionInicialDeAbejas(10,(25,25)))
+for i in [4,5,6,7]:
+    print(i)
