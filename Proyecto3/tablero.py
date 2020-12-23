@@ -39,8 +39,71 @@ flores=generarPoblacionInicialDeFlores(25)
 for i in flores:
     pygame.draw.rect(screen,i.colorDeFlor,[i.posicion[0]*14,i.posicion[1]*14,14,14])
 
+def calcularPuntosDif(dir,x,y):
+    diccionario={
+        'N':(x-1,y+1),
+        'S':(x+1,y-1),
+        'E':(x+1,y+1),
+        'O':(x-1,y-1),
+        'NE':(x,y+1),
+        'NO':(x-1,y),
+        'SE':(x+1,y),
+        'SO':(x,y-1)
+    }
+    return diccionario[dir]
+    
+def calcularPuntos(dir,x,y):
+    diccionario={
+        'N':(x-1,y),
+        'S':(x+1,y),
+        'E':(x,y+1),
+        'O':(x,y-1),
+        'NE':(x-1,y+1),
+        'NO':(x-1,y-1),
+        'SE':(x+1,y+1),
+        'SO':(x+1,y-1)
+    }
 
+    return diccionario[dir]
 
+def calcularPuntosRelleno(dir,x,y):
+    diccionario={
+        'N':(x,y+1),
+        'S':(x,y-1),
+        'E':(x+1,y),
+        'O':(x-1,y),
+        'NE':(x+1,y),
+        'NO':(x,y+1),
+        'SE':(x,y-1),
+        'SO':(x-1,y)
+    }
+    return diccionario[dir]
+
+def triangulo(abeja):
+    listaPuntosLimiteSuperior=[]
+    listaPuntosLimitesInferior=[]
+    listaTriangulo=[]
+    actual=(25,25)
+    print(abeja.direccionFavorita[0])
+    for i in range(25):
+        actual=calcularPuntos(abeja.direccionFavorita[0],actual[0],actual[1])
+        listaPuntosLimiteSuperior.append(actual)
+        
+    actual=(25,25)
+    for i in range(25):
+        actual=calcularPuntosDif(abeja.direccionFavorita[0],actual[0],actual[1])
+        listaPuntosLimitesInferior.append(actual)
+
+    for i in range (25):
+        actual=listaPuntosLimiteSuperior[i]
+        while actual !=listaPuntosLimitesInferior[i]:
+            actual=(calcularPuntosRelleno(abeja.direccionFavorita[0],actual[0],actual[1]))
+            listaTriangulo.append(actual)
+    return listaTriangulo
+#se inicia el recorrido
+def recorridoUnaAbeja(abeja,matrizTablero):
+    pass
+triangulo(panal.enjambre[0])
 
 #loop de la simulacion
 while run:
