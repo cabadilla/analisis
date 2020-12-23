@@ -117,7 +117,7 @@ def recorridoUnaAbeja(abeja,matrizTablero):
 
     return abeja
 
-def recorridoGeneracion(generacionAbejas,matriz):
+def recorridoGeneracion(generacionAbejas,matriz,gen):
     '''
     Objetivo: Realiza el recorrido de todas las abejas utilizando su funcion auxiliar
     Recibe: La generaccion actual de abejas y la matriz del campo
@@ -126,17 +126,17 @@ def recorridoGeneracion(generacionAbejas,matriz):
     finalGeneracion=[]
     for i in generacionAbejas:
         finalGeneracion.append(recorridoUnaAbeja(i,matriz))
-
+    ControladorDeTXT.escribirTXT(finalGeneracion, gen)
     nuevaGeneracion=(cruceAbejas(finalGeneracion))
     return nuevaGeneracion
 
-def inciarGeneraciones(panal,flores,matrizT):
+def inciarGeneraciones(panal,flores,matrizT,gen):
     '''
     Objetivo: Realiza la primera generacion de abejas y flores
     Recibe: El panall de abejas, las flores y el campo del trabajo
     Retorna: El panall y todas las flores nuevas
     '''
-    nueva=recorridoGeneracion(panal.enjambre,matrizT)
+    nueva=recorridoGeneracion(panal.enjambre,matrizT,gen)
     panal.enjambre=nueva
     floresNuevas=cruceFlores(flores)
     return panal,floresNuevas
@@ -173,8 +173,7 @@ while True:
                 matriz[flor.posicion[0]][flor.posicion[1]]=flor
                 pygame.draw.rect(screen,flor.colorDeFlor,[flor.posicion[0]*14,flor.posicion[1]*14,14,14])
             
-            panal,flores=inciarGeneraciones(panal,flores,matriz)
-            ControladorDeTXT.escribirTXT(panal.enjambre, gen)
+            panal,flores=inciarGeneraciones(panal,flores,matriz,gen)
             #se actualiza
             pygame.display.flip()
             time.sleep(3)
