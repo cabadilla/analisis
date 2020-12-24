@@ -13,8 +13,6 @@ screen=pygame.display.set_mode(size)
 screen.fill(BLANCO)
 run=True
 
-
-
 def calcularPuntosDif(dir,x,y):
     '''
     Objetivo: Calcula el limite inferior de la vision de las abejas
@@ -174,6 +172,10 @@ while True:
                 pygame.draw.rect(screen,flor.colorDeFlor,[flor.posicion[0]*14,flor.posicion[1]*14,14,14])
             
             panal,flores=inciarGeneraciones(panal,flores,matriz,gen)
+            ControladorDeTXT.leerTXT()
+            ControladorDeTXT.escribirTXT(panal.enjambre, gen)
+
+
             #se actualiza
             pygame.display.flip()
             time.sleep(3)

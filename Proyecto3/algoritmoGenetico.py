@@ -3,6 +3,11 @@ import numpy
 from random import randint
 
 def funcionAdaptabilidadAbejas(abejas):
+    '''
+    Objetivo: Funcion de adaptabilidad de las abejas, se sacan la mitad de abejas que peor rendimiento dieron y se reproducen solo la mejor mitad
+    Recibe: Un array de abejas que es el enjambre del panal
+    Retorna: Retorna un array con las mejores abejas que hay en el enjambre actualmetne
+    '''
     mayorCantidadFlores=0
     mejorAbeja=0
     mejoresAbejas=[]
@@ -19,6 +24,11 @@ def funcionAdaptabilidadAbejas(abejas):
 
 
 def funcionAdaptabilidadFlores(flo):
+    '''
+    Objetivo: Funcion de adaptabilidad de las flores, se sacan la mitad de flores que por rendimiento dieron o que nunca se visitaron y comienzan a morir
+    Recibe: Un array de las flores que hay en todo el campo actualmente
+    Retorna: Las flores que tuvieron el mejor rendimiento para que estas mismas empiecen a reproducirse
+    '''
     mejoresFlores=[]
     mejorFlor=0
     for i in range(50):
@@ -33,6 +43,11 @@ def funcionAdaptabilidadFlores(flo):
     return mejoresFlores
 
 def llenar(binario,num):
+    '''
+    Objetivo: Funcion que se dedica a rellenar con 0's a la izquierda para mantener los 8 bits
+    Recibe: Recibe un numero en binario y un numero de longitud
+    Retorna: El numero binario en 8 bits
+    '''
     nuevoValor=binario[2:]
     while len(nuevoValor) != num:
         nuevoValor='0'+nuevoValor
@@ -40,6 +55,11 @@ def llenar(binario,num):
     
     
 def cruceAbeja(abejaUno,abejaDos):
+    '''
+    Objetivo: Tiene como objetivo el realizar el cruce de abejas para mezclar los genes entre las mejores abejas
+    Recibe: Una abeja padre y una abeja madre
+    Retorna: Una abeja con los cromosomas nuevos
+    '''
     cromosomaDireccion=''
     cromosomaColor=['','','']
 
@@ -108,6 +128,11 @@ def cruceAbeja(abejaUno,abejaDos):
     return nuevaAbeja
 
 def cruceAbejas(abejas):
+    '''
+    Objetivo: Funcion que se dedica a escoger la abeja padre y madre para la reproduccion de ellas
+    Recibe: El enjambre completo
+    Retorna: El nuevo enjambre de esta generacion
+    '''
     mejoresAbejas=funcionAdaptabilidadAbejas(abejas)
     nuevasAbejas=[]
     abejaUno=0
@@ -122,6 +147,11 @@ def cruceAbejas(abejas):
 
 
 def cruceFlor(florUno,florDos):
+    '''
+    Objetivo: Tiene como objetivo el realizar el cruce de las flores
+    Recibe: Una flor madre y una flor padre
+    Retorna: La nueva flor que se forma del cruce
+    '''
     cromosomasColor=['','','']
 
     cordsUno=(llenar(bin(florUno.posicion[0]),6),llenar(bin(florUno.posicion[1]),6))
@@ -161,6 +191,11 @@ def cruceFlor(florUno,florDos):
 
 
 def cruceFlores(flores):
+    '''
+    Objetivo: Controla el cruce de todas las flores y consigo escoge las flores padre
+    Recibe: El arreglo de las flores que hay en la generacion actual
+    Retorna: Las nuevas flores que van a haber en la generacion
+    '''
     mejoresFlores=funcionAdaptabilidadFlores(flores)
     nuevasFlores=[]
     florUno=0
@@ -173,6 +208,11 @@ def cruceFlores(flores):
     return nuevasFlores
 
 def devolverColor():
+    '''
+    Objetivo: Retorna el color favorito para las flores o para las abejas
+    Recibe: No recibe
+    Retorna: Retorna un random entre los 8 colores que hay
+    '''
     colores={
         1:(255,51,51),
         2:(255,242,51),
@@ -186,6 +226,11 @@ def devolverColor():
     return colores[randint(1,8)]
 
 def devolverDireccion():
+    '''
+    Objetivo: Retorna una direccion favorita para las abejas
+    Recibe: No recibe
+    Retorna: Retorna una direccion random para la direccion favorita
+    '''
     diccionarioDirecciones={
         1:('N','000'),
         2:('S','001'),
@@ -201,14 +246,23 @@ def devolverDireccion():
 
 
 def generarPoblacionInicialDeAbejas(cantidad, panal):
+    '''
+    Objetivo: Genera la poblacion inicial de abejas 
+    Recibe: La cantidad de abejas a generar y el panal donde se van a almacenar
+    Retorna: Un arreglo con la poblacion de abejas
+    '''
     poblacion=[]
     for i in range (cantidad):
         poblacion.append(abejas(devolverDireccion(),devolverColor(),panal))
     return poblacion
 
 def generarPoblacionInicialDeFlores(cantidad,n):
+    '''
+    Objetivo: Genera la poblacion inicial de flores
+    Recibe: La cantidad de flores a generar, un n de coordenada
+    Retorna: Un arreglo con la poblacion de flores
+    '''
     poblacion=[]
-
     for i in range(cantidad):
         x=randint(0,n-1)
         y=randint(0,n-1)

@@ -87,8 +87,8 @@ class controladorTXT:
         Retorna: En consola imprime los detalles de las abejas
         '''
         file=open("GeneracionAnterior.txt", "r") #se lee la generacion anterior para desplegarse en el programa
-        for lines in file:
-            print(file.readline())
+        registro=file.read()
+        print(registro)
         file.close()
 
     def escribirTXT(self, enjambre, generacion):
@@ -99,12 +99,16 @@ class controladorTXT:
         '''
         file=open("RegistroSimulacion.txt", "a") #le hace un append al archivo de los registros simulacion
         file.write("--------------Generacion "+str(generacion)+"--------------"+os.linesep)
+        i=1
         for abeja in enjambre:
-            file.write(str(abeja.polem)+os.linesep)
+            file.write("Abeja "+str(i)+": Direccion favorita: "+abeja.direccionFavorita[0]+", Color favorito: "+str(abeja.colorFavorito)+", Polem recolectado: "+str(len(abeja.polem))+", Flores visitadas: "+str(abeja.polem)+os.linesep)
+            i+=1
         file.close()
 
         file=open("GeneracionAnterior.txt", "w") #le hace update a la relacion anterior
         file.write("--------------Generacion "+str(generacion)+"--------------"+os.linesep)
+        i=1
         for abeja in enjambre:
-            file.write(str(abeja.polem)+os.linesep)
+            file.write("Abeja "+str(i)+": Direccion favorita: "+abeja.direccionFavorita[0]+", Color favorito: "+str(abeja.colorFavorito)+", Polem recolectado: "+str(len(abeja.polem))+", Flores visitadas: "+str(abeja.polem)+os.linesep)
+            i+=1
         file.close()
